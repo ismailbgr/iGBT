@@ -1,0 +1,4 @@
+celery
+openai
+bardapi
+redis
