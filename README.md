@@ -7,7 +7,7 @@ TODO LİST:
 
 -kullanılacak pipeline'a göre methodlar class'a çevrilebilir.
 
-
+-api işleri halledilecek
 
 **********
 -tek mainde tüm modüller sorunsuz çalışmaktadır
