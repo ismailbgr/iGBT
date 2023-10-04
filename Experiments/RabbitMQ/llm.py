@@ -1,7 +1,7 @@
 """
 This module is used to get answer from LLM models you want. 
 
-keybard="bgimLv6dI06dIIsG1w0Bh1di7L6MgWHtqphm0XHSJMCMCs0FajFKF-ziGVyPYkcsFUAAEg."
+keybard="bgimLonoiGrtI2Ek1x5vIFdP1qZM0LxI0ckMz3uls08r_vaalvD9EPytBUOeblGO6-bEbQ."
 keygpt3="sk-15zYoWmkbwyTx3s4KODOT3BlbkFJeP3XstKOcNLWj8K5oyYNsk-15zYoWmkbwyTx3s4KODOT3BlbkFJeP3XstKOcNLWj8K5oyYN"
 """
 from bardapi import Bard
