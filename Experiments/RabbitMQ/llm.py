@@ -19,7 +19,7 @@ class LLM:
     def get_answer(self, question):
         if self.model_name == "bard":
             self.model = Bard(self.api)
-            return self.model.get_answer(question)
+            return self.model.get_answer(question)["content"]
         elif self.model_name == "gpt3":
             openai.api_key = self.api
             response = openai.Completion.create(
@@ -31,4 +31,6 @@ class LLM:
             return response["choices"][0].text
         else:
             raise Exception("Invalid LLM model in getting answer.")
+        
+    
     
