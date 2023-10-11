@@ -5,3 +5,4 @@ redis
 SpeechRecognition
 pydub
 google-cloud-speech
+pytube
