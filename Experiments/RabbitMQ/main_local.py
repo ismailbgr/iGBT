@@ -23,7 +23,7 @@ Here is the transcript:
 """
 
 #convert mp3 to text
-question = speech_to_text_local("output.mp3","output.txt")
+question = Speech2Text("output.mp3","output.txt","en-US","local").speech_to_text()
 
 #ask question
 print(LLM("bard","bgimLgh0_gdPWhrzo7sEvTXvh70Vj-OU-JmycMCBMQ-2GyymajdSqww4nn8nzW76DAjS0w.").get_answer(question_prefix+question))
