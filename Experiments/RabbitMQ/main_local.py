@@ -1,14 +1,16 @@
 import sys
 from time import sleep
 
-import speech_recognition as sr
 from llm import LLM
 from speech_texter import Speech2Text
-from tasks import get_answer_task
 from video_parsing import pars
+from Downloader import YouTubeDownloader
+#download the video
 
+
+YouTubeDownloader(sys.argv[1]).download("video.mp4")
 #convert mp4 to mp3
-pars(sys.argv[1],"output.mp3")
+pars("video.mp4","output.mp3")
 
 question_prefix = """
 

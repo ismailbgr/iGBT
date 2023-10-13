@@ -10,7 +10,13 @@ def index():
         youtube_url = request.form['youtube_url']
         
         # Python scriptinizi çalıştırın ve çıktısını alın
-        result = subprocess.getoutput(f'python main_local.py {youtube_url}')
+
+        command = ["python",
+        "main_local.py",
+        youtube_url
+        ]
+        result = subprocess.run(command, shell=True, text=True, stdout=subprocess.PIPE,check=True)
+        result = result.stdout
 
         return render_template('index.html', result=result)
 
