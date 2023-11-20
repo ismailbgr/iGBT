@@ -1,0 +1,28 @@
+version: '3'
+services:
+  videoparser:
+    build:
+      context: videoparser
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    hostname: videoparser
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    hostname: rabbitmq
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    hostname: redis
+  flower:
+    image: mher/flower
+    ports:
+      - 5555:5555
+    hostname: flower
+    depends_on:
+      - rabbitmq
+    command: flower --broker=amqp://guest:guest@rabbitmq:5672//

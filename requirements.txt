@@ -1,9 +1,0 @@
-celery
-openai
-bardapi
-redis
-SpeechRecognition
-pydub
-google-cloud-speech
-pytube
-flask

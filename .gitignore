@@ -158,6 +158,7 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-Experiments/RabbitMQ/video.mp4
-Experiments/RabbitMQ/test_videos/show_ama_kisa.mp4
-Experiments/RabbitMQ/test_videos/news_kisa.mp4
+
+*.mp3
+*.mp4
+old/*
