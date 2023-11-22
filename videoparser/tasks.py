@@ -1,0 +1,70 @@
+import subprocess
+from celery import Celery
+import base64
+import uuid
+from Downloader import YouTubeDownloader
+
+# Create the Celery app
+
+app = Celery(
+    "videoparser", broker="amqp://rabbitmq:5672", backend="redis://redis:6379/0"
+)
+
+app.conf.task_routes = {
+    "convert_video_to_mp3": {"queue": "videoparser"},
+    "youtube_dl": {"queue": "videoparser"},
+}
+
+
+@app.task(name="convert_video_to_mp3")
+def convert_video_to_mp3(input_file):
+    """
+    Converts a given mp4 video file to an mp3 audio file.
+
+    Args:
+        input_file (str): The path to the input mp4 video file.
+    """
+    uuidname = str(uuid.uuid4())
+    with open(f"/tmp/{uuidname}.mp4", "wb") as f:
+        f.write(base64.b64decode(input_file))
+    input_file = f"/tmp/{uuidname}.mp4"
+    output_file = f"/tmp/{uuidname}.mp3"
+
+    # Construct the FFmpeg command
+    command = [
+        "ffmpeg",
+        "-i",
+        input_file,
+        "-vn",
+        "-acodec",
+        "libmp3lame",
+        "-q:a",
+        "4",
+        "-y",
+        output_file,
+    ]
+    # Run the FFmpeg command
+    subprocess.run(command, check=True)
+    print(f"Conversion completed. Output file: {output_file}")
+
+    with open(output_file, "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data)
+    return b64
+
+
+# youtube downloader
+@app.task(name="youtube_dl")
+def youtube_dl(url):
+    print("REMOVE ME IF YOU SEE THIS")
+    import time
+
+    time.sleep(10)
+    print("REMOVE ME IF YOU SEE THIS")
+    uuidname = str(uuid.uuid4())
+    downloader = YouTubeDownloader(url)
+    downloader.download(f"/tmp/{uuidname}.mp4")
+    with open(f"/tmp/{uuidname}.mp4", "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data)
+    return b64

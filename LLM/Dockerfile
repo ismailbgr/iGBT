@@ -1,14 +1,11 @@
 FROM alpine
 
-
-# install ffmpeg and python3
-RUN apk add --no-cache ffmpeg python3 py3-pip
+RUN apk update && apk add python3-dev gcc libc-dev py3-pip
 
 # install python dependencies
 COPY requirements.txt /tmp/requirements.txt
 
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
-
 
 # copy the app
 COPY . /app
@@ -17,4 +14,4 @@ COPY . /app
 WORKDIR /app
 
 # run the celery worker
-CMD celery -A tasks worker --loglevel=info -Q videoparser
+CMD celery -A llm_tasks worker --loglevel=info -Q llm
