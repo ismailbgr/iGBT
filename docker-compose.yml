@@ -65,6 +65,16 @@ services:
       - redis
       - ollama
 
+  speechtexter:
+    build:
+      context: SpeechTexter
+      dockerfile: Dockerfile
+    hostname: speechtexter
+    depends_on:
+      - rabbitmq
+      - redis
+      - ollama
+
   redisinsight:
     image: redislabs/redisinsight:latest
     ports:
