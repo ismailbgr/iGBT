@@ -1,0 +1,84 @@
+version: '3'
+
+volumes:
+  ollama:
+
+
+services:
+  videoparser:
+    build:
+      context: videoparser
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    hostname: videoparser
+    depends_on:
+      - rabbitmq
+      - redis
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    hostname: rabbitmq
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    hostname: redis
+
+  flower:
+    image: mher/flower:0.9.7
+    command:
+      [
+        'flower',
+        '--broker=amqp://rabbitmq:5672',
+        '--port=5555'
+      ]
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+    hostname: flower
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - 11434:11434
+    hostname: ollama
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ollama:/root/.ollama
+
+  llm:
+    build:
+      context: LLM
+      dockerfile: Dockerfile
+    hostname: llm
+    depends_on:
+      - rabbitmq
+      - redis
+      - ollama
+
+  speechtexter:
+    build:
+      context: SpeechTexter
+      dockerfile: Dockerfile
+    hostname: speechtexter
+    depends_on:
+      - rabbitmq
+      - redis
+      - ollama
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - 8001:8001
+    hostname: redisinsight
+    depends_on:
+      - redis

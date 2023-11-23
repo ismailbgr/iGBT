@@ -1,8 +1,9 @@
 from pytube import YouTube
 
+
 class YouTubeDownloader:
     """A class to download YouTube videos
-    
+
     Attributes
     ----------
     url : str
@@ -15,6 +16,7 @@ class YouTubeDownloader:
     download(filepath=None)
         Downloads the video to the specified filepath
     """
+
     def __init__(self, url):
         self.url = url
         self.video = YouTube(url)

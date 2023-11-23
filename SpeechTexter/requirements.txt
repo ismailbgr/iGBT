@@ -1,0 +1,6 @@
+celery==5.3.5
+protobuf==4.25.1
+pydub==0.25.1
+SpeechRecognition==3.10.0
+redis==5.0.1
+google-cloud-speech
