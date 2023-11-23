@@ -1,5 +1,5 @@
 import subprocess
-from celery import Celery
+from celery import Celery, current_task, states
 import base64
 import uuid
 from Downloader import YouTubeDownloader
@@ -24,6 +24,7 @@ def convert_video_to_mp3(input_file):
     Args:
         input_file (str): The path to the input mp4 video file.
     """
+    current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
     with open(f"/tmp/{uuidname}.mp4", "wb") as f:
         f.write(base64.b64decode(input_file))
@@ -56,11 +57,7 @@ def convert_video_to_mp3(input_file):
 # youtube downloader
 @app.task(name="youtube_dl")
 def youtube_dl(url):
-    print("REMOVE ME IF YOU SEE THIS")
-    import time
-
-    time.sleep(10)
-    print("REMOVE ME IF YOU SEE THIS")
+    current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
     downloader = YouTubeDownloader(url)
     downloader.download(f"/tmp/{uuidname}.mp4")
