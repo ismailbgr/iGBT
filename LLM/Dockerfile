@@ -14,4 +14,4 @@ COPY . /app
 WORKDIR /app
 
 # run the celery worker
-CMD celery -A llm_tasks worker --loglevel=info -Q llm
+CMD celery -A tasks worker --loglevel=info -Q llm

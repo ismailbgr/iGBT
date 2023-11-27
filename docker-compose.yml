@@ -7,7 +7,7 @@ volumes:
 services:
   videoparser:
     build:
-      context: videoparser
+      context: VideoParser
       dockerfile: Dockerfile
     ports:
       - 8000:8000
