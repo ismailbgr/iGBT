@@ -1,7 +1,8 @@
 version: '3'
 
-volumes:
-  ollama:
+# volumes:
+#   ollama:
+
 
 
 services:
@@ -11,24 +12,34 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+    user: 1000:1000
     hostname: videoparser
     depends_on:
       - rabbitmq
       - redis
+    volumes:
+      - ./config:/app/config
 
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - 5672:5672
       - 15672:15672
+    user: 1000:1000
     hostname: rabbitmq
     depends_on:
       - redis
+    volumes:
+      - ./config:/app/config
+
   redis:
     image: redis:latest
     ports:
       - 6379:6379
+    user: 1000:1000
     hostname: redis
+    volumes:
+      - ./config:/app/config
 
   flower:
     image: mher/flower:0.9.7
@@ -42,46 +53,57 @@ services:
       - 5557:5555
     depends_on:
       - redis
+      - rabbitmq
+    user: 1000:1000
     hostname: flower
+    volumes:
+      - ./config:/app/config
 
   ollama:
     image: ollama/ollama
     ports:
       - 11434:11434
     hostname: ollama
-    depends_on:
-      - rabbitmq
-      - redis
     volumes:
-      - ollama:/root/.ollama
+      - ./config:/app/config
+      - ./config/ollama:/root/.ollama
 
   llm:
     build:
       context: LLM
       dockerfile: Dockerfile
+    user: 1000:1000
     hostname: llm
     depends_on:
       - rabbitmq
       - redis
       - ollama
+    volumes:
+      - ./config:/app/config
 
   speechtexter:
     build:
       context: SpeechTexter
       dockerfile: Dockerfile
+    user: 1000:1000
     hostname: speechtexter
     depends_on:
       - rabbitmq
       - redis
       - ollama
+    volumes:
+      - ./config:/app/config
 
   redisinsight:
     image: redislabs/redisinsight:latest
     ports:
       - 8001:8001
+    user: 1000:1000
     hostname: redisinsight
     depends_on:
       - redis
+    volumes:
+      - ./config:/app/config
 
   webinterface:
     build:
