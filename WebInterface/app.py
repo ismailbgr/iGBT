@@ -38,20 +38,14 @@ def upload_video():
         if file.filename == "":
             return redirect(request.url)
         # convert the file to base64
-        data = file.read()
-        b64 = base64.b64encode(data)
-        # send the file to the celery task
+        b64 = ""
+        with open(file.filename, "rb") as f:
+            b64 = base64.b64encode(f.read())
+        # send the task to celery
         res = celery.send_task("convert_video_to_mp3", args=[b64])
-        # wait for the task to finish
-        while not res.ready():
-            print("waiting...")
-            time.sleep(1)
-        # get the result
-        b64 = res.get()
-        # decode the result
-        data = base64.b64decode(b64)
-        print(data)
-        return redirect(url_for("upload_video"))
+        task_id = res.id
+        # redirect to the check status page
+        return render_template("upload_video.html", task_id=task_id)
     return render_template("upload_video.html")
 
 
