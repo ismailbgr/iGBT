@@ -46,9 +46,6 @@ def upload_video():
         while not res.ready():
             print("waiting...")
             time.sleep(1)
-            # we will show a loading screen
-            # while the task is running
-            loading = True
         # get the result
         b64 = res.get()
         # decode the result
