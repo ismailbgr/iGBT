@@ -14,4 +14,9 @@ COPY . /app
 WORKDIR /app
 
 # run the celery worker
-CMD celery -A tasks worker --loglevel=info
+# CMD celery -A app worker --loglevel=info
+# install uvicorn
+RUN pip3 install uvicorn
+
+# run the server
+CMD uvicorn app:app --host 0.0.0.0 --port 5000 

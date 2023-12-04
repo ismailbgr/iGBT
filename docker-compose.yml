@@ -82,3 +82,15 @@ services:
     hostname: redisinsight
     depends_on:
       - redis
+
+  webinterface:
+    build:
+      context: WebInterface
+      dockerfile: Dockerfile
+    hostname: webinterface
+    ports:
+      - 5000:5000
+    depends_on:
+      - rabbitmq
+      - redis
+      - ollama

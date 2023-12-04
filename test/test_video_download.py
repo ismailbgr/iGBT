@@ -22,7 +22,7 @@ while not res.ready():
     print(res.state)
     time.sleep(1)
 
-print(res.get())
+# print(res.get())
 
 with open("dltest.mp4", "wb") as f:
     f.write(base64.b64decode(res.get()))
