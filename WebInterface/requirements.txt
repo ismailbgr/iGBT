@@ -1,0 +1,4 @@
+celery==5.3.5
+Flask==3.0.0
+redis==5.0.1
+uvicorn==0.24.0.post1

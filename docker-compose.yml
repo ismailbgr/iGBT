@@ -1,10 +1,5 @@
 version: '3'
 
-# volumes:
-#   ollama:
-  
-
-
 services:
   videoparser:
     build:
@@ -92,7 +87,7 @@ services:
       - redis
       - ollama
     volumes:
-    - ./config:/app/config
+      - ./config:/app/config
 
   redisinsight:
     image: redislabs/redisinsight:latest
@@ -103,4 +98,24 @@ services:
     depends_on:
       - redis
     volumes:
-    - ./config:/app/config
+      - ./config:/app/config
+
+  webinterface:
+    build:
+      context: WebInterface
+      dockerfile: Dockerfile
+    hostname: webinterface
+    ports:
+      - 5000:5000
+    depends_on:
+      - rabbitmq
+      - redis
+      - ollama
+    develop:
+      watch:
+        - action: sync
+          path: ./WebInterface/
+          target: /app/
+    volumes:
+      - ./config:/app/config
+
