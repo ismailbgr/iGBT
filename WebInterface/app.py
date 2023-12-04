@@ -27,5 +27,16 @@ def upload_text():
         return redirect(url_for('index'))
     return render_template('upload_text.html')
 
+# create a route for about us page
+@app.route('/about_us')
+def about():
+    return render_template('about_us.html')
+
+# create a route for home page  
+@app.route('/home')
+def home():
+    return render_template('index.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
