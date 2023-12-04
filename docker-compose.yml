@@ -2,8 +2,7 @@ version: '3'
 
 # volumes:
 #   ollama:
-
-
+  
 
 
 services:
@@ -93,7 +92,7 @@ services:
       - redis
       - ollama
     volumes:
-      - ./config:/app/config
+    - ./config:/app/config
 
   redisinsight:
     image: redislabs/redisinsight:latest
@@ -121,3 +120,5 @@ services:
         - action: sync
           path: ./WebInterface/
           target: /app/
+    volumes:
+    - ./config:/app/config
