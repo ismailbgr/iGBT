@@ -118,3 +118,4 @@ services:
           target: /app/
     volumes:
       - ./config:/app/config
+
