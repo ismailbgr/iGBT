@@ -94,3 +94,8 @@ services:
       - rabbitmq
       - redis
       - ollama
+    develop:
+      watch:
+        - action: sync
+          path: ./WebInterface/
+          target: /app/

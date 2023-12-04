@@ -46,6 +46,9 @@ def upload_video():
         while not res.ready():
             print("waiting...")
             time.sleep(1)
+            # we will show a loading screen
+            # while the task is running
+            loading = True
         # get the result
         b64 = res.get()
         # decode the result
@@ -62,13 +65,19 @@ def upload_text():
         print(text)
 
         res = celery.send_task("summarize", args=[text])
-        while not res.ready():
-            print("waiting...", flush=True)
-            print(res.state, flush=True)
-            time.sleep(1)
-        print(res.get())
-        return redirect(url_for("upload_text"))
+        task_id = res.id
+
+        return render_template("upload_text.html", task_id=task_id)
     return render_template("upload_text.html")
+
+
+# TODO: return progress if available
+@flask_app.route("/check_status/<task_id>")
+def check_status(task_id):
+    task = celery.AsyncResult(task_id)
+    if task.state == "SUCCESS":
+        return task.get(), 286
+    return task.state
 
 
 # create a route for about us page
