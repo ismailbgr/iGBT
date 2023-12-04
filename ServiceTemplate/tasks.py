@@ -1,11 +1,21 @@
 from celery import Celery
 import base64
 import uuid
+import yaml
+
+# Load config
+config = None
+with open("/app/config/config.yml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
+print("config: ", config)
 
 # Create the Celery app
 
 app = Celery(
-    "videoparser", broker="amqp://rabbitmq:5672", backend="redis://redis:6379/0"
+    "videoparser",
+    broker=config["celery"]["broker"],
+    backend=config["celery"]["backend"],
 )
 
 
