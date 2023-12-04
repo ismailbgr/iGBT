@@ -4,6 +4,8 @@ version: '3'
 #   ollama:
 
 
+
+
 services:
   videoparser:
     build:
