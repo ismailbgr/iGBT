@@ -1,6 +1,7 @@
 # imports
 from flask import Flask, render_template, request, redirect, url_for
 from celery import Celery
+from celery import signature
 import base64
 import time
 
@@ -19,6 +20,8 @@ celery.conf.update(flask_app.config)
 celery.conf.task_routes = (
     [
         ("summarize", {"queue": "llm"}),
+        ("convert_video_to_mp3", {"queue": "videoparser"}),
+        ("speech2text", {"queue": "speechtexter"}),
     ],
 )
 
@@ -37,16 +40,26 @@ def upload_video():
         file = request.files["file"]
         if file.filename == "":
             return redirect(request.url)
-        # convert the file to base64
-        b64 = ""
-        with open(file.filename, "rb") as f:
-            b64 = base64.b64encode(f.read())
+        # read the file
+        b64 = base64.b64encode(file.read())
         # send the task to celery
-        res = celery.send_task("convert_video_to_mp3", args=[b64])
+        chain = signature(
+            "convert_video_to_mp3", args=[b64], queue="videoparser", app=celery
+        )
+        chain |= signature("speech2text", queue="speechtexter", app=celery)
+        chain |= signature("summarize", queue="llm", app=celery)
+        res = chain.apply_async()
+        # get the task id
         task_id = res.id
+
         # redirect to the check status page
-        return render_template("upload_video.html", task_id=task_id)
+        return redirect(url_for("upload_video_result", id=task_id))
     return render_template("upload_video.html")
+
+
+@flask_app.route("/video/<id>", methods=["GET", "POST"])
+def upload_video_result(id):
+    return render_template("upload_video.html", task_id=id)
 
 
 @flask_app.route("/upload_text", methods=["GET", "POST"])
@@ -58,15 +71,31 @@ def upload_text():
         res = celery.send_task("summarize", args=[text])
         task_id = res.id
 
-        return render_template("upload_text.html", task_id=task_id)
+        # return render_template("upload_text.html", task_id=task_id)
+        return redirect(url_for("upload_text_result", id=task_id))
     return render_template("upload_text.html")
 
 
+@flask_app.route("/text/<id>", methods=["GET", "POST"])
+def upload_text_result(id):
+    return render_template("upload_text.html", task_id=id)
+
+
 # TODO: return progress if available
-@flask_app.route("/check_status/<task_id>")
-def check_status(task_id):
+@flask_app.route("/check_text_status/<task_id>")
+def check_text_status(task_id):
     task = celery.AsyncResult(task_id)
-    if task.state == "SUCCESS":
+    print(task.state)
+    if task.state == "SUCCESS" or task.state == "FAILURE":
+        return task.get(), 286
+    return task.state
+
+
+@flask_app.route("/check_video_status/<task_id>")
+def check_video_status(task_id):
+    task = celery.AsyncResult(task_id)
+    print(task.state)
+    if task.state == "SUCCESS" or task.state == "FAILURE":
         return task.get(), 286
     return task.state
 
@@ -78,7 +107,7 @@ def about():
 
 
 # create a route for home page
-@flask_app.route("/home")
+@flask_app.route("/")
 def home():
     return render_template("index.html")
 

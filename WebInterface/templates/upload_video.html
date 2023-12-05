@@ -11,7 +11,7 @@
       <h1>Summarize Video</h1>
       <h5 class="w3-padding-32">Processing video:</h5>
       <!-- we have task_id now, use htmx to update div every 1 sec-->
-      <div id="task_id" hx-get="/check_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
+      <div id="task_id" hx-get="/check_video_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
         <p>Task ID: <span hx-swap="innerHTML">Loading...</span></p>
       </div>
     </div>

@@ -1,25 +1,25 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% block content %}
 
-  <!-- Second Grid -->
-  <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
-    <div class="w3-content">
+<!-- Second Grid -->
+<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+  <div class="w3-content">
 
-      <div class="w3-twothird">
+    <div class="w3-twothird">
 
-        <div class="w3-third w3-center">
-          <i class="fa fa-file-text w3-padding-64 w3-text-red w3-margin-right"></i>
-        </div>
-        <h1>Summarize Text</h1>
-        <h5 class="w3-padding-32">Processing text:</h5>
+      <div class="w3-third w3-center">
+        <i class="fa fa-file-text w3-padding-64 w3-text-red w3-margin-right"></i>
+      </div>
+      <h1>Summarize Text</h1>
+      <h5 class="w3-padding-32">Processing text:</h5>
 
-        <!-- we have task_id now, use htmx to update div every 1 sec-->
-        <div id="task_id" hx-get="/check_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
-          <p>Task ID: <span hx-swap="innerHTML">Loading...</span></p>
+      <!-- we have task_id now, use htmx to update div every 1 sec-->
+      <div id="task_id" hx-get="/check_text_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
+        <p>Task ID: <span hx-swap="innerHTML">Loading...</span></p>
 
 
-        </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
