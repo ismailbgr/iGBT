@@ -22,7 +22,7 @@ class LLM:
         if self.model_name == "ollama":
             model_config = {
                 "name": "summarizer",
-                "modelfile": "FROM falcon:latest\nSYSTEM Summarize the main points of the passage/text/article.",
+                "modelfile": "FROM orca-mini:3b\nSYSTEM Summarize the main points of the passage/text/article.",
             }
             requests.post("http://ollama:11434/api/create", json=model_config)
             print("ollama model created")
