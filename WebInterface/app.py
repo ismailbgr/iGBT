@@ -91,8 +91,10 @@ def check_text_status(task_id):
 def check_video_status(task_id):
     task = celery.AsyncResult(task_id)
     print(task.state)
-    if task.state == "SUCCESS" or task.state == "FAILURE":
+    if task.state == "SUCCESS":
         return task.get(), 286
+    elif task.state == "FAILURE":
+        return 286
     return task.state
 
 

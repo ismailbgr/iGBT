@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.js"
+        integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -28,7 +30,22 @@
         .fa-video-camera,
         .fa-file-text,
         .fa-id-card-o {
-            font-size: 200px
+            font-size: 200px;
+            color: #b6e3e8 !important;
+
+        }
+
+        .my-bg-color {
+            background-color: #0d0b3c;
+        }
+
+        .my-header-text-color {
+            color: #b6e3e8;
+        }
+
+        .my-below-background-color {
+            background-color: #d0dfe1;
+            ;
         }
     </style>
 
@@ -43,26 +60,27 @@
 <body>
     <!-- Navbar -->
     <div class="w3-top">
-        <div class="w3-bar w3-red w3-card w3-left-align w3-large">
-            <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red"
+        <div class="w3-bar my-bg-color w3-card w3-left-align w3-large">
+            <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large my-bg-color"
                 href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i
                     class="fa fa-bars"></i></a>
             <a href="/" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
             <!-- add a link to about us page -->
-            <a href="about_us" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">About Us</a>
+            <a href="about_us"
+                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white my-header-text-color">About
+                Us</a>
         </div>
 
         <!-- Navbar on small screens -->
         <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-            <a href="about_us" class="w3-bar-item w3-button w3-padding-large">About Us</a>
+            <a href="about_us" class="w3-bar-item w3-button w3-padding-large my-header-text-color">About Us</a>
         </div>
     </div>
 
     <!-- Header -->
-    <header class="w3-container w3-red w3-center" style="padding:128px 16px">
-        <h1 class="w3-margin w3-jumbo">iGBT</h1>
-        <p class="w3-xlarge">Summarizer by LLM</p>
-        <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Get Started</button>
+    <header class="w3-container my-bg-color w3-center" style="padding:128px 16px">
+        <h1 class="w3-margin w3-jumbo my-header-text-color">iGBT</h1>
+        <p class="w3-xlarge my-header-text-color">Summarizer by LLM</p>
     </header>
 
 
@@ -100,7 +118,15 @@
                 x.className = x.className.replace(" w3-show", "");
             }
         }
+
+        document.addEventListener('invalid', (function () {
+            return function (e) {
+                e.preventDefault();
+                document.getElementById("customFile").focus();
+            };
+        })(), true);
     </script>
+
 </body>
 
 </html>
