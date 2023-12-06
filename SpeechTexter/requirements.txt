@@ -5,3 +5,4 @@ SpeechRecognition==3.10.0
 redis==5.0.1
 google-cloud-speech
 PyYAML
+pocketsphinx
