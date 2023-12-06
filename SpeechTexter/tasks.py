@@ -34,5 +34,5 @@ def speech2text(
         input_file_name, output_file, language_code, model_name
     ).speech_to_text()
 
-    with open(output_file, "rb") as f:
+    with open(output_file, "r") as f:
         return f.read()

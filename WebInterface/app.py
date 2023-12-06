@@ -7,6 +7,7 @@ import time
 
 # creates a Flask object
 flask_app = Flask(__name__)
+flask_app.secret_key = "secret key"
 
 
 # creates a Celery object
@@ -24,11 +25,6 @@ celery.conf.task_routes = (
         ("speech2text", {"queue": "speechtexter"}),
     ],
 )
-
-
-@flask_app.route("/")
-def index():
-    return render_template("index.html")
 
 
 @flask_app.route("/upload_video", methods=["GET", "POST"])

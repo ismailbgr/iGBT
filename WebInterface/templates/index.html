@@ -1,5 +1,47 @@
 {% extends 'base.html' %}
+{% block head %}
+<style>
+  #loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  #loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
 {% block title %}Home{% endblock %}
+{% endblock %}
 
 {% block content %}
 <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
@@ -21,7 +63,12 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Upload</button>
+          <button type="submit" class="w3-button w3-black w3-padding-large w3-large w3-margin-top"
+            onclick="showLoading()">Upload</button>
+          <div id="loading-overlay"></div>
+          <div id="loading-spinner">
+            <div class="spinner"></div>
+          </div>
         </div>
       </form>
     </div>
@@ -50,4 +97,14 @@
     </div>
   </div>
 </div>
+
+<script>
+  function showLoading() {
+    // Display the loading spinner
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('loading-overlay').style.display = 'block';
+  }
+</script>
+
+
 {% endblock %}
