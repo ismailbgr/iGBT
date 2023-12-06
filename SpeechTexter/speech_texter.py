@@ -68,7 +68,7 @@ class Speech2Text:
                 audio_data = self.recognizer.record(source)
             # Use Google Web Speech API to transcribe the audio
             try:
-                transcribed_text = self.recognizer.recognize_google(audio_data, language=self.language_code)
+                transcribed_text = self.recognizer.recognize_sphinx(audio_data, language=self.language_code)
                 print("Transcription: ", transcribed_text)
                 # Save the transcribed text to the output file
                 with open(self.output_file, "w", encoding="utf-8") as text_file:
