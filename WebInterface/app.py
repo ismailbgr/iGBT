@@ -72,7 +72,7 @@ def upload_video_result(id):
 @flask_app.route("/upload_text", methods=["GET", "POST"])
 def upload_text():
     if request.method == "POST":
-        text = request.form["text"]
+        text = request.form["w3review"]
         print(text)
 
         res = celery.send_task("summarize", args=[text])
