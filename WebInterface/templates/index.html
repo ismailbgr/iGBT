@@ -45,8 +45,13 @@
     box-sizing: border-box;
     border: 2px solid #ccc;
     border-radius: 4px;
-    background-color: #f8f8f8;
+    background-color: #F8EDE3;
     resize: none;
+  }
+
+  .submit-button {
+    background-color: #7D6E83;
+    color: white;
   }
 
   @keyframes spin {
@@ -83,7 +88,7 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="w3-button w3-black w3-padding-large w3-large w3-margin-top"
+          <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
             onclick="showLoading()">Upload</button>
           <div id="loading-overlay"></div>
           <div id="loading-spinner">
@@ -107,7 +112,7 @@
           <h5>Please upload the text that you want to summarize:</h5>
           <label for="text"></label>
           <textarea id="w3review" name="w3review" rows="4" cols="50"></textarea>
-          <button type="submit" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Upload</button>
+          <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Upload</button>
         </div>
       </form>
     </div>
