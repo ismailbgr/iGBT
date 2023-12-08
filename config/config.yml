@@ -2,4 +2,4 @@ celery:
   broker: amqp://rabbitmq:5672/
   backend: redis://redis:6379/0
 speechtexter:
-  model_name: local
+  model_name: mock

@@ -21,7 +21,9 @@ app = Celery(
 
 
 @app.task(name="speech2text")
-def speech2text(input_file, language_code="en-US", model_name=config["speechtexter"]["model_name"]):
+def speech2text(
+    input_file, language_code="en-US", model_name=config["speechtexter"]["model_name"]
+):
     input_file_name = str(uuid.uuid4()) + ".mp3"
     output_file = str(uuid.uuid4()) + ".txt"
 
@@ -32,5 +34,5 @@ def speech2text(input_file, language_code="en-US", model_name=config["speechtext
         input_file_name, output_file, language_code, model_name
     ).speech_to_text()
 
-    with open(output_file, "rb") as f:
-        return base64.b64encode(f.read()).decode("utf-8")
+    with open(output_file, "r") as f:
+        return f.read()
