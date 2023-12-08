@@ -4,18 +4,29 @@ from celery import Celery
 from celery import signature
 import base64
 import time
+import yaml
 
 # creates a Flask object
 flask_app = Flask(__name__)
 flask_app.secret_key = "secret key"
 
 
-# creates a Celery object
+# Load config
+config = None
+with open("/app/config/config.yml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
+if config is None:
+    raise Exception("Config file not found")
+
+print("config: ", config)
+
+# Create the Celery app
+
 celery = Celery(
-    flask_app.name,
-    broker="amqp://rabbitmq:5672/",
-    backend="redis://redis:6379/0",
+    "llm", broker=config["celery"]["broker"], backend=config["celery"]["backend"]
 )
+
 celery.conf.update(flask_app.config)
 
 celery.conf.task_routes = (
