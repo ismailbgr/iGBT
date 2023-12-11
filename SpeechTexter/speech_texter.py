@@ -73,7 +73,7 @@ class Speech2Text:
                 audio_data = self.recognizer.record(source)
             # Use Google Web Speech API to transcribe the audio
             try:
-                transcribed_text = self.recognizer.recognize_sphinx(
+                transcribed_text = self.recognizer.recognize_google(
                     audio_data, language=self.language_code
                 )
                 print("Transcription: ", transcribed_text)
@@ -89,6 +89,15 @@ class Speech2Text:
             except sr.RequestError:
                 print("Could not request results from Google Web Speech API")
                 raise sr.RequestError
+            
+        elif self.model_name == "mock":
+            text = """Johannes Gutenberg (1398 – 1468) was a German goldsmith and publisher who introduced printing to Europe. His introduction of mechanical movable
+type printing to Europe started the Printing Revolution and is widely regarded as the most important event of the modern period. It played a key role in the
+scientific revolution and laid the basis for the modern knowledge-based economy and the spread of learning to the masses.
+"""
+
+            with open(self.output_file, "w", encoding="utf-8") as text_file:
+                text_file.write(text) 
         else:
             raise Exception("Invalid model name in speech to text.")
 
