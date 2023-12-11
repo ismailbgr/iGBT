@@ -14,6 +14,7 @@ services:
       - redis
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -26,6 +27,7 @@ services:
       - redis
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   redis:
     image: redis:latest
@@ -34,6 +36,7 @@ services:
     hostname: redis
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   flower:
     image: mher/flower:0.9.7
@@ -52,6 +55,7 @@ services:
     hostname: flower
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   ollama:
     image: ollama/ollama
@@ -60,6 +64,7 @@ services:
     hostname: ollama
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
       - ./config/ollama:/root/.ollama
 
   llm:
@@ -74,6 +79,7 @@ services:
       - ollama
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   speechtexter:
     build:
@@ -87,6 +93,7 @@ services:
       - ollama
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   taskchecker:
     build:
@@ -107,6 +114,7 @@ services:
       - redis
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   webinterface:
     build:
@@ -126,6 +134,7 @@ services:
           target: /app/
     volumes:
       - ./config:/app/config
+      - ./SharedData/:/data
 
   postgres:
     image: postgres:latest
