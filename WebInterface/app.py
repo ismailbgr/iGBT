@@ -138,9 +138,9 @@ def add_user_to_db(
         + ");"
     )
 
-    query = str(query[0])
+    query = str(query)
 
-    print(type(query))
+    print(query)
     engine.execute(text(query))
 
 
@@ -249,10 +249,16 @@ def signup():
             print("Email is not available.")
             return redirect("/signup")
         else:
-            personname = data["ad"]
-            personsurname = data["soyad"]
-            telephoneno = data["telefon"][0]
-            password = data["saltedpassword"]
+            print("Email is available.")
+            print("Name: ", name)
+            print("Surname: ", surname)
+            print("Email: ", email)
+            print("Telephone: ", telephone)
+            print("Password: ", password)
+            personname = name
+            personsurname = surname
+            telephoneno = telephone
+            password = password
             saltedpassword = encrypt_string(str(password))
             try:
                 add_user_to_db(
@@ -281,10 +287,13 @@ def signin():
         return redirect(url_for("profile"))
     if request.method == "POST":
         username = request.form["username"]
-        password = request.form["password"]
+        password = encrypt_string(str(request.form["password"]))
+        print("Username: ", username)
+        print("Password: ", password)
 
         check_user = check_user_from_database(username, password)
-        if check_user == "ERROR_CHECK_USER":
+
+        if check_user == "[]":
             flash("Kullanıcı adı veya şifre hatalı.", category="error")
             return render_template("signin.html")
 
