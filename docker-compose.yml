@@ -89,6 +89,15 @@ services:
     volumes:
       - ./config:/app/config
 
+  taskchecker:
+    build:
+      context: TaskChecker
+      dockerfile: Dockerfile
+    user: 1000:1000
+    hostname: taskchecker
+    volumes:
+      - ./config:/app/config
+
   redisinsight:
     image: redislabs/redisinsight:latest
     ports:
