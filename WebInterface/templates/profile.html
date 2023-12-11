@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block title %} Profile {% endblock %} {% block content %}
+
+<h3 class="h3 cover-heading">Profil Ayarları</h1>
+
+    <!-- print user information -->
+    ad : {{ current_user.ad }} <br />
+    soyad : {{ current_user.soyad }} <br />
+    email : {{ current_user.email }} <br />
+    telefon : {{ current_user.telefon }} <br />
+
+    <br />
+    <br />
+
+    {% endblock %}
