@@ -89,14 +89,6 @@ class Speech2Text:
             except sr.RequestError:
                 print("Could not request results from Google Web Speech API")
                 raise sr.RequestError
-        elif self.model_name == "mock":
-            text = """Johannes Gutenberg (1398 – 1468) was a German goldsmith and publisher who introduced printing to Europe. His introduction of mechanical movable
-type printing to Europe started the Printing Revolution and is widely regarded as the most important event of the modern period. It played a key role in the
-scientific revolution and laid the basis for the modern knowledge-based economy and the spread of learning to the masses.
-"""
-
-            with open(self.output_file, "w", encoding="utf-8") as text_file:
-                text_file.write(text)
         else:
             raise Exception("Invalid model name in speech to text.")
 
