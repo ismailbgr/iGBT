@@ -119,3 +119,15 @@ services:
     volumes:
       - ./config:/app/config
 
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    hostname: postgres
+    volumes:
+      - ./config:/app/config
+      - ./config/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: igbt
+      POSTGRES_PASSWORD: bitircez
+      POSTGRES_DB: igbt
