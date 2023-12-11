@@ -5,6 +5,7 @@ from celery import signature
 import base64
 import time
 import yaml
+import uuid
 
 # creates a Flask object
 flask_app = Flask(__name__)
@@ -48,10 +49,12 @@ def upload_video():
         if file.filename == "":
             return redirect(request.url)
         # read the file
-        b64 = base64.b64encode(file.read())
+        uuid_str = str(uuid.uuid4())
+        fpath = f"/data/{uuid_str}.mp4"
+        file.save(fpath)
         # send the task to celery
         chain = signature(
-            "convert_video_to_mp3", args=[b64], queue="videoparser", app=celery
+            "convert_video_to_mp3", args=[fpath], queue="videoparser", app=celery
         )
         chain |= signature("speech2text", queue="speechtexter", app=celery)
         chain |= signature("summarize", queue="llm", app=celery)

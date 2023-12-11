@@ -4,6 +4,7 @@ import base64
 import uuid
 import yaml
 from Downloader import YouTubeDownloader
+import os
 
 # Load config
 config = None
@@ -27,12 +28,55 @@ app.conf.task_routes = {
 
 
 @app.task(name="convert_video_to_mp3")
-def convert_video_to_mp3(input_file):
+def convert_video_to_mp3(input_filepath):
     """
     Converts a given mp4 video file to an mp3 audio file.
 
     Args:
         input_file (str): The path to the input mp4 video file.
+
+    Returns:
+        str: The path to the output mp3 audio file.
+    """
+    current_task.update_state(state=states.STARTED)
+    input_file_name = input_filepath.split("/")[-1].split(".")[0]
+    output_file_path = f"/data/{input_file_name}.mp3"
+
+    # Construct the FFmpeg command
+    command = [
+        "ffmpeg",
+        "-i",
+        input_filepath,
+        "-vn",
+        "-acodec",
+        "libmp3lame",
+        "-q:a",
+        "4",
+        "-y",
+        output_file_path,
+    ]
+
+    result = subprocess.run(command, check=False, capture_output=True)
+    if result.returncode != 0:
+        raise Exception(f"FFmpeg command failed with error: {result.stderr.decode()}")
+
+    print(f"Conversion completed. Output file: {output_file_path}")
+
+    return output_file_path
+
+
+@app.task(name="convert_video_to_mp3_file")
+def convert_video_to_mp3(input_file):
+    """
+    DEPRECATED use convert_video_to_mp3 instead
+    Converts a given mp4 video file to an mp3 audio file.
+
+
+    Args:
+        input_file (str): Base64 encoded mp4 video file.
+
+    Returns:
+        b64 (str): The base64 encoded mp3 audio file.
     """
     current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
