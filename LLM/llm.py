@@ -50,7 +50,10 @@ class LLM:
             r = requests.post("http://ollama:11434/api/generate", json=data)
             pretty = json.loads(r.text)
             # TODO: bazen end of line karakteri geliyor, onu silmek lazım
-            return pretty["response"]
+            if pretty["response"].endswith("<|endoftext|>"):
+                return pretty["response"][:-13]
+            else:
+                return pretty["response"]
 
         else:
             raise Exception("Invalid LLM model in getting answer.")
