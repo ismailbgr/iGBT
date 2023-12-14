@@ -90,7 +90,6 @@ services:
     depends_on:
       - rabbitmq
       - redis
-      - ollama
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
@@ -125,6 +124,7 @@ services:
     ports:
       - 5000:5000
     depends_on:
+      - postgres
       - rabbitmq
       - redis
       - ollama
@@ -138,7 +138,9 @@ services:
       - ./SharedData/:/data
 
   postgres:
-    image: postgres:latest
+    build:
+      context: postgres
+      dockerfile: Dockerfile
     ports:
       - 5432:5432
     hostname: postgres
@@ -150,3 +152,11 @@ services:
       POSTGRES_PASSWORD: bitircez
       POSTGRES_DB: igbt
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    hostname: adminer
+    depends_on:
+      - postgres
