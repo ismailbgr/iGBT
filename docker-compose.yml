@@ -104,6 +104,7 @@ services:
     volumes:
       - ./config:/app/config
 
+
   redisinsight:
     image: redislabs/redisinsight:latest
     ports:
@@ -148,3 +149,4 @@ services:
       POSTGRES_USER: igbt
       POSTGRES_PASSWORD: bitircez
       POSTGRES_DB: igbt
+
