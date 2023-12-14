@@ -225,6 +225,15 @@ def profile():
     return render_template("profile.html")
 
 
+@flask_app.route("/profile/update", methods=["GET", "POST"])
+@login_required
+def profile_update():
+    print("Profile update")
+    if request.method == "POST":
+        # TODO: update user info
+        return render_template("profile.html")
+
+
 @flask_app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -310,7 +319,7 @@ def signin():
         )
 
         login_user(user)
-        return redirect(url_for("profile"))
+        return redirect(url_for("home"))
 
     return render_template("signin.html")
 

@@ -31,7 +31,6 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
-    user: 1000:1000
     hostname: redis
     volumes:
       - ./config:/app/config

@@ -63,6 +63,10 @@
         .footer {
             background-color: #F8EDE3;
         }
+
+        .w3-hide-small .w3-dropdown-content {
+            transform: translate(-80px, 10px);
+        }
     </style>
 
     <script src="https://unpkg.com/htmx.org@1.9.9"
@@ -92,14 +96,22 @@
 
 
             {% if current_user.is_authenticated %}
-            <a href="profile"
-                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white{% if request.path == '/signin' %} clicked-page-button {% endif %}">{{
-                current_user.ad }}
-            </a>
-            <a href="logout"
+            <div style="float:left;"
+                class=" w3-dropdown-hover w3- w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white my-bg-color w3-right">
+                <a>{{
+                    current_user.ad
+                    }}</a>
+                <div class="w3-dropdown-content w3-bar-block w3-border">
+                    <a href="/profile" class="w3-bar-item w3-button my-header-text-color my-bg-color">Profili
+                        Düzenle</a>
+                    <a href="#" class="w3-bar-item w3-button my-header-text-color my-bg-color">Sonuçlar</a>
+                    <a href="logout" class="w3-bar-item w3-button my-header-text-color my-bg-color">Çıkış Yap</a>
+                </div>
+            </div>
+            <!-- <a href="logout"
                 class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-right {% if request.path == '/logout' %} clicked-page-button {% endif %}">Log
                 out
-            </a>
+            </a> -->
 
             {% else %}
             <a href="signin"
@@ -116,8 +128,17 @@
             <a href="/" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Home</a>
             <a href="about_us" class="w3-bar-item w3-button w3-padding-large my-header-text-color">About Us</a>
             {% if current_user.is_authenticated %}
-            <a href="profile" class="w3-bar-item w3-button w3-padding-large my-header-text-color">{{ current_user.ad
-                }}</a>
+            <div class=" w3-dropdown-hover w3-padding-large my-header-text-color">
+                <a>{{
+                    current_user.ad
+                    }}</a>
+                <div class=" my-bg-color w3-dropdown-content w3-bar-block w3-border ">
+                    <a href="/profile" class="w3-bar-item w3-button my-header-text-color my-bg-color">Profili
+                        Düzenle</a>
+                    <a href="#" class="w3-bar-item w3-button my-header-text-color my-bg-color">Sonuçlar</a>
+                    <a href="logout" class="w3-bar-item w3-button my-header-text-color my-bg-color">Çıkış Yap</a>
+                </div>
+            </div>
             <a href="logout" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Log out</a>
             {% else %}
             <a href="signin" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Login</a>

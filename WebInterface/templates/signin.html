@@ -1,7 +1,6 @@
 {% extends "base.html" %} {% block title %} Allergen Detector {% endblock %} {% block content %}
 <div style="justify-items: center; text-align: center;" class="my-below-background-color">
     <form class="form-signin" method="POST" action="/signin">
-        <!-- <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"> -->
         <br />
         <h1 class="h3 mb-3 font-weight-normal text-center">Giriş Yap</h1>
         <label for="inputEmail" class="sr-only">E-Posta</label>
@@ -11,11 +10,6 @@
         <label for="inputPassword" class="sr-only">Şifre</label>
         <input type="password" style="width: 200px;" id="inputPassword" name="password" class="form-control mx-auto"
             placeholder="Şifre" required>
-        <!-- <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> Beni Hatırla
-        </label>
-      </div> -->
         <br />
         <a href="/signup">Hesabınız yok mu? Kayıt Olun</a>
         <br />
