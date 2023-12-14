@@ -166,3 +166,5 @@ old/*
 
 # ollama stuff
 config/ollama/*
+
+config/postgres/*
