@@ -237,6 +237,24 @@ def profile_update():
         return render_template("profile.html")
 
 
+@flask_app.route("/profile/tasks", methods=["GET"])
+@login_required
+def profile_tasks():
+    print("Profile tasks")
+    # image/png;base64,
+    task_temp = [
+        {"name": "video_2", "url": "https://picsum.photos/320/180"},
+        {"name": "video_1", "url": "https://picsum.photos/320/180"},
+        {"name": "video_3", "url": "https://picsum.photos/320/180"},
+        {"name": "video_3", "url": "https://picsum.photos/320/180"},
+        {"name": "video_3", "url": "https://picsum.photos/320/180"},
+        {"name": "video_3", "url": "https://picsum.photos/320/180"},
+        {"name": "video_3", "url": "https://picsum.photos/320/180"},
+        {"name": "video_3", "url": "https://picsum.photos/320/180"},
+    ]
+    return render_template("profile_tasks.html", tasks=task_temp)
+
+
 @flask_app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
