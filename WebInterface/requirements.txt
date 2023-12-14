@@ -1,5 +1,9 @@
-celery==5.3.5
+celery==5.3.6
 Flask==3.0.0
+flask_login==0.6.3
+pandas==2.1.4
+psycopg2-binary
+SQLAlchemy==1.4.1
 redis==5.0.1
 uvicorn==0.24.0.post1
 PyYAML

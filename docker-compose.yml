@@ -33,7 +33,6 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
-    user: 1000:1000
     hostname: redis
     volumes:
       - ./config:/app/config
@@ -96,6 +95,16 @@ services:
       - ./config:/app/config
       - ./SharedData/:/data
 
+  taskchecker:
+    build:
+      context: TaskChecker
+      dockerfile: Dockerfile
+    user: 1000:1000
+    hostname: taskchecker
+    volumes:
+      - ./config:/app/config
+
+
   redisinsight:
     image: redislabs/redisinsight:latest
     ports:
@@ -127,3 +136,17 @@ services:
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    hostname: postgres
+    volumes:
+      - ./config:/app/config
+      - ./config/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: igbt
+      POSTGRES_PASSWORD: bitircez
+      POSTGRES_DB: igbt
+
