@@ -168,3 +168,4 @@ old/*
 config/ollama/*
 
 config/postgres/*
+SharedData/dump.rdb
