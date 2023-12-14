@@ -51,6 +51,7 @@ celery.conf.task_routes = (
         ("summarize", {"queue": "llm"}),
         ("convert_video_to_mp3", {"queue": "videoparser"}),
         ("speech2text", {"queue": "speechtexter"}),
+        ("taskchecker", {"queue": "taskchecker"}),
     ],
 )
 
@@ -346,6 +347,9 @@ def upload_video():
         # get the task id
         task_id = res.id
 
+        celery.send_task(
+            "check_task", args=[task_id, current_user.id], queue="taskchecker"
+        )
         # redirect to the check status page
         return redirect(url_for("upload_video_result", id=task_id))
     return render_template("upload_video.html")
@@ -366,7 +370,9 @@ def upload_text():
 
         res = celery.send_task("summarize", args=[text])
         task_id = res.id
-
+        celery.send_task(
+            "check_task", args=[task_id, current_user.id], queue="taskchecker"
+        )
         # return render_template("upload_text.html", task_id=task_id)
         return redirect(url_for("upload_text_result", id=task_id))
     return render_template("upload_text.html")

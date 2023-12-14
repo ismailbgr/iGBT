@@ -25,4 +25,4 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # run the celery worker
-CMD celery -A tasks worker --loglevel=info
+CMD celery -A tasks worker --loglevel=info -Q taskchecker
