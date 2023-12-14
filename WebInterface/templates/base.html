@@ -90,7 +90,7 @@
             <a href="/"
                 class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white {% if request.path == '/' %} clicked-page-button {% endif %}">Home</a>
 
-            <a href="about_us"
+            <a href="/about_us"
                 class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white{% if request.path == '/about_us' %} clicked-page-button {% endif %}">About
                 Us</a>
 
@@ -105,7 +105,7 @@
                     <a href="/profile" class="w3-bar-item w3-button my-header-text-color my-bg-color">Profili
                         Düzenle</a>
                     <a href="#" class="w3-bar-item w3-button my-header-text-color my-bg-color">Sonuçlar</a>
-                    <a href="logout" class="w3-bar-item w3-button my-header-text-color my-bg-color">Çıkış Yap</a>
+                    <a href="/logout" class="w3-bar-item w3-button my-header-text-color my-bg-color">Çıkış Yap</a>
                 </div>
             </div>
             <!-- <a href="logout"
@@ -114,7 +114,7 @@
             </a> -->
 
             {% else %}
-            <a href="signin"
+            <a href="/signin"
                 class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white{% if request.path == '/signin' %} clicked-page-button {% endif %}">Login
             </a>
 
@@ -126,7 +126,7 @@
 
         <div id="navDemo" class="w3-bar-block clicked-page-button w3-hide w3-hide-large w3-hide-medium w3-large">
             <a href="/" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Home</a>
-            <a href="about_us" class="w3-bar-item w3-button w3-padding-large my-header-text-color">About Us</a>
+            <a href="/about_us" class="w3-bar-item w3-button w3-padding-large my-header-text-color">About Us</a>
             {% if current_user.is_authenticated %}
             <div class=" w3-dropdown-hover w3-padding-large my-header-text-color">
                 <a>{{
@@ -136,12 +136,12 @@
                     <a href="/profile" class="w3-bar-item w3-button my-header-text-color my-bg-color">Profili
                         Düzenle</a>
                     <a href="#" class="w3-bar-item w3-button my-header-text-color my-bg-color">Sonuçlar</a>
-                    <a href="logout" class="w3-bar-item w3-button my-header-text-color my-bg-color">Çıkış Yap</a>
+                    <a href="/logout" class="w3-bar-item w3-button my-header-text-color my-bg-color">Çıkış Yap</a>
                 </div>
             </div>
-            <a href="logout" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Log out</a>
+            <a href="/logout" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Log out</a>
             {% else %}
-            <a href="signin" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Login</a>
+            <a href="/signin" class="w3-bar-item w3-button w3-padding-large my-header-text-color">Login</a>
             {% endif %}
 
         </div>
