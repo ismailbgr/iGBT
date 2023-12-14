@@ -341,6 +341,10 @@ def upload_video():
         uuid_str = str(uuid.uuid4())
         fpath = f"/data/{uuid_str}.mp4"
         file.save(fpath)
+
+        thumbnail = request.form["thumbnail"]
+        thumbnail = thumbnail.split(",")[1]
+
         # send the task to celery
         chain = signature(
             "convert_video_to_mp3", args=[fpath], queue="videoparser", app=celery
@@ -350,6 +354,11 @@ def upload_video():
         res = chain.apply_async()
         # get the task id
         task_id = res.id
+
+        # save the thumbnail as base64
+        query = f"insert into \"Task\" (task_id, thumbnail) values ('{task_id}', '{thumbnail}')"
+
+        engine.execute(text(query))
 
         celery.send_task(
             "check_task", args=[task_id, current_user.id], queue="taskchecker"

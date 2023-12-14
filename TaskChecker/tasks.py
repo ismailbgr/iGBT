@@ -60,7 +60,7 @@ app = Celery(
 def check_task(task_id, user_id):
     task = app.AsyncResult(task_id)
     cur_task_state = task.state
-    add_entry_to_task(task_id, cur_task_state)
+    # add_entry_to_task(task_id, cur_task_state)
     add_entry_to_usertask(task_id, user_id)
     while not task.ready():
         print(f"Task {task_id} not ready")

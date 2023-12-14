@@ -3,7 +3,7 @@
 CREATE TABLE "public"."Task" (
     "task_id" text NOT NULL,
     "result" text,
-    "thumbnail" bytea,
+    "thumbnail" text,
     CONSTRAINT "Task_task_id" PRIMARY KEY ("task_id")
 ) WITH (oids = false);
 
