@@ -56,7 +56,7 @@ app = Celery(
 )
 
 
-@app.task(name="check_task", time_limit=60, soft_time_limit=50)
+@app.task(name="check_task")
 def check_task(task_id, user_id):
     task = app.AsyncResult(task_id)
     cur_task_state = task.state
@@ -70,7 +70,14 @@ def check_task(task_id, user_id):
         time.sleep(10)
 
     with allow_join_result():
-        task_result = task.get()
+        try:
+            task_result = task.get()
+        except:
+            print(
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            )
+            task_result = "FAILED"
+
         task_result = str(task_result).replace("'", "&#39;").replace('"', "&#34;")
     change_task_state(task_id, task_result)
     return task_result
