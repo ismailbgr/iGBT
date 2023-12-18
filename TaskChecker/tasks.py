@@ -44,6 +44,7 @@ def check_task(task_id, user_id):
         if task.state != cur_task_state:
             cur_task_state = task.state
             change_task_state(task_id, cur_task_state)
+            change_task_edit_date(task_id)
         time.sleep(10)
 
     with allow_join_result():
@@ -57,5 +58,6 @@ def check_task(task_id, user_id):
 
         task_result = str(task_result).replace("'", "&#39;").replace('"', "&#34;")
     change_task_state(task_id, task_result)
+    change_task_edit_date(task_id)
     return task_result
     # TODO: Write to DB

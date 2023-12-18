@@ -136,10 +136,10 @@ def check_if_user_has_task(userid, taskid):
         return True
 
 
-def add_task_with_thumbnail(taskid, thumbnail):
-    query = (
-        f"insert into \"Task\" (task_id, thumbnail) values ('{taskid}', '{thumbnail}')"
-    )
+def add_task_with_thumbnail(taskid, thumbnail, file_name):
+    current_date = pd.Timestamp.now()
+
+    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}');"
     print(query, flush=True)
     engine.execute(text(query))
 
@@ -151,15 +151,15 @@ def add_entry_to_usertask(task_id, user_id):
     engine.execute(text(query))
 
 
-def add_entry_to_task(task_id, result):
-    query = f"insert into \"Task\" values('{task_id}', '{result}');"
+def change_task_state(task_id, state):
+    query = f"update \"Task\" set result = '{state}' where task_id = '{task_id}';"
 
     print(query)
     engine.execute(text(query))
 
 
-def change_task_state(task_id, state):
-    query = f"update \"Task\" set result = '{state}' where task_id = '{task_id}';"
-
+def change_task_edit_date(task_id):
+    current_date = pd.Timestamp.now()
+    query = f"update \"Task\" set task_last_edit_date = '{current_date}' where task_id = '{task_id}';"
     print(query)
     engine.execute(text(query))
