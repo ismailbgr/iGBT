@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block title %} Profile {% endblock %}
+{% block head %}
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        column-gap: 50px;
+        row-gap: 50px;
+        justify-content: space-evenly;
+        /* padding: 10px; */
+    }
+
+    .grid-item {
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        /* padding: 20px; */
+        font-size: 16px;
+        text-align: center;
+        border-radius: 25px;
+        /* max-width: 300px; */
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="w3-padding-64 my-below-background-color">
+    <div class="grid-container">
+        {% for row in tasks %}
+
+        <div class="w3-card-4 grid-item my-below-background-color" style="cursor:pointer;"
+            onclick="goToVideo(`{{row['type'] }}`,`{{row['task_id'] }}`)">
+            <img style="border-top-right-radius: 25px; border-top-left-radius: 25px;"
+                src="data:image/png;base64,{{ row['url'] }}">
+            <div class="w3-container w3-center">
+                <p>{{ row['name'] }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function goToVideo(type, task_id) {
+        window.location.href = "/" + type + "/" + task_id;
+    }
+</script>
+
+{% endblock %}

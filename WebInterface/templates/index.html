@@ -89,12 +89,13 @@
             </div>
           </div>
           <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
-            onclick="showLoading()">Upload</button>
+            onclick="showLoading()" disabled>Upload</button>
           <div id="loading-overlay"></div>
           <div id="loading-spinner">
             <div class="spinner"></div>
           </div>
         </div>
+        <input type="hidden" name="thumbnail" id="thumbnail" value="">
       </form>
       {% else %}
       <h5>Please login to upload video.</h5>
@@ -131,6 +132,36 @@
   </div>
 </div>
 
+<!-- Third Grid -->
+
+<div class="w3-row-padding my-below-background-color w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-third w3-center">
+      <i class="fa fa-youtube w3-padding-64 w3-text-red"></i>
+    </div>
+
+    <div class="w3-twothird">
+      <h1>Summarize Youtube Video</h1>
+      {% if current_user.is_authenticated %}
+      <form method="POST" action="/upload_youtube">
+        <div class="w3-container">
+          <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
+          <label for="text"></label>
+          <input type="text" id="youtube_link" name="youtube_link" placeholder="YouTube Link">
+          <button type="submit"
+            class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
+        </div>
+      </form>
+      {% else %}
+      <h5>Please login to upload text.</h5>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+</div>
+
+
 <script>
   function showLoading() {
     if ($('#customFile').val().length == 0) {
@@ -143,6 +174,36 @@
 
 
   }
+
+  // create thumbnail of video
+  var filepicker = document.getElementById('customFile');
+
+  filepicker.addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    var fileURL = URL.createObjectURL(file);
+    var video = document.createElement('video');
+
+    video.src = fileURL;
+    // seek video 10 seconds in for thumbnail
+    video.currentTime = 1;
+    video.addEventListener('loadeddata', function () {
+      var canvas = document.createElement('canvas');
+      // canvas.width = video.videoWidth;
+      // canvas.height = video.videoHeight;
+      canvas.width = 320;
+      canvas.height = 180;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      var dataURI = canvas.toDataURL('image/jpeg');
+      document.getElementById('thumbnail').value = dataURI;
+      //enable upload button
+      document.getElementsByClassName('submit-button')[0].disabled = false;
+      console.log(dataURI);
+
+    });
+
+  });
+
 </script>
 
 
