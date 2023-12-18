@@ -45,6 +45,13 @@ def check_user_from_database(username, password):
     return test_data
 
 
+def update_user(user_id, ad, soyad, telefon):
+    global engine
+    query = f"update \"user\" set ad = '{ad}', soyad = '{soyad}', telefon = '{telefon}'  where user_id = '{user_id}';"
+    print(query)
+    engine.execute(text(query))
+
+
 def check_email_available(email):
     global engine
     query = 'select * from "user" where email = \'' + email + "'"

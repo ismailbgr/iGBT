@@ -28,7 +28,7 @@
     <div class="grid-container">
         {% for row in tasks %}
 
-        <div class="w3-card-4 grid-item my-below-background-color" style="cursor:pointer;" onclick="goToVideo(`{{
+        <div class="w3-card-4 grid-item my-below-background-color" style="cursor:pointer;" onclick="goToVideo(` {{
             row['name'] }}`)">
             <img style="border-top-right-radius: 25px; border-top-left-radius: 25px;"
                 src="data:image/png;base64,{{ row['url'] }}">

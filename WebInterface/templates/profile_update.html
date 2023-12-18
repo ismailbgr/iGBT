@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block title %} Profile {% endblock %} {% block content %}
 
 <div style="justify-items: center; text-align: center;" class="my-below-background-color">
+    <br />
     <h3 class="h3 cover-heading">Profil Ayarları</h1>
         <form action="/profile/update" method="POST">
             <br />
@@ -18,7 +19,7 @@
             <br />
             <label for="inputEmail" class="sr-only">E-Posta*</label>
             <input type="email" style="width: 200px;" id="inputEmail" name="username" class="form-control mx-auto"
-                placeholder="{{ current_user.email }}" required autofocus>
+                placeholder="{{ current_user.email }}" disabled>
             <br />
             <label for="inputPassword" class="sr-only">Şifre*</label>
             <input type="password" style="width: 200px;" id="inputPassword" name="password" class="form-control mx-auto"

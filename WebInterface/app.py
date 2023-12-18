@@ -152,8 +152,20 @@ def profile():
 def profile_update():
     print("Profile update")
     if request.method == "POST":
-        # TODO: update user info
-        return render_template("profile.html")
+        name = request.form["name"]
+        surname = request.form["surname"]
+        phone = request.form["phone"]
+        password = request.form["password"]
+        password = encrypt_string(str(password))
+        if check_user_from_database(current_user.email, password) == "[]":
+            flash("Şifre hatalı.", category="error")
+            return redirect("/profile/update")
+        else:
+            update_user(current_user.id, name, surname, phone)
+            flash("Güncelleme başarılı.", category="success")
+            return redirect("/profile")
+
+    return render_template("profile_update.html")
 
 
 @flask_app.route("/profile/tasks", methods=["GET"])
