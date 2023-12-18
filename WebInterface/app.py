@@ -374,8 +374,13 @@ def upload_youtube():
         # TODO: get video title from youtube
         file_name = url
 
-        add_task_with_thumbnail(task_id, thumbnail, file_name, "video")
+        llm_id = res.id
+        speech_texter_id = res.parent.id
+        video_parser_id = res.parent.parent.id
+
+        add_task_with_thumbnail(task_id, thumbnail, file_name, "video", "a")
         add_entry_to_usertask(task_id, current_user.id)
+        add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
 
         celery.send_task(
             "check_task", args=[task_id, current_user.id], queue="taskchecker"
@@ -385,10 +390,10 @@ def upload_youtube():
     return render_template("upload_video.html")
 
 
-@flask_app.route("/text/<id>", methods=["GET", "POST"])
+@flask_app.route("/text/<task_id>", methods=["GET", "POST"])
 def upload_text_result(task_id):
-    if check_if_user_has_task(current_user.id, id):
-        return render_template("upload_text.html", task_id=id)
+    if check_if_user_has_task(current_user.id, task_id):
+        return render_template("upload_text.html", task_id=task_id)
     else:
         flash("You do not have permission to view this task.", category="error")
         return redirect("/")

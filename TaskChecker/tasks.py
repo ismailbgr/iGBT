@@ -36,7 +36,6 @@ app = Celery(
 @app.task(name="check_task")
 def check_task(task_id, user_id):
     task = app.AsyncResult(task_id)
-    print("task", type(task), flush=True)
     cur_task_state = task.state
 
     while not task.ready():
@@ -47,7 +46,7 @@ def check_task(task_id, user_id):
             change_task_state(task_id, cur_task_state)
             change_task_edit_date(task_id)
         time.sleep(10)
-
+    speech_texter_result = None
     with allow_join_result():
         try:
             task_result = task.get()
@@ -64,6 +63,7 @@ def check_task(task_id, user_id):
         task_result = str(task_result).replace("'", "&#39;").replace('"', "&#34;")
     change_task_state(task_id, task_result)
     change_task_edit_date(task_id)
-    change_input_text(task_id, speech_texter_result)
+    if speech_texter_result is not None:
+        change_input_text(task_id, speech_texter_result)
     return task_result
     # TODO: Write to DB
