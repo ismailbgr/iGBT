@@ -120,6 +120,6 @@ def youtube_dl(self, url):
     current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
     output_file = f"/data/{uuidname}.mp4"
-    downloader = YouTubeDownloader(url)
+    downloader = YouTubeDownloader(url, self)
     downloader.download(output_file)
     return output_file
