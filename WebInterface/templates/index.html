@@ -132,6 +132,36 @@
   </div>
 </div>
 
+<!-- Third Grid -->
+
+<div class="w3-row-padding my-below-background-color w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-third w3-center">
+      <i class="fa fa-youtube w3-padding-64 w3-text-red"></i>
+    </div>
+
+    <div class="w3-twothird">
+      <h1>Summarize Youtube Video</h1>
+      {% if current_user.is_authenticated %}
+      <form method="POST" action="/upload_youtube">
+        <div class="w3-container">
+          <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
+          <label for="text"></label>
+          <input type="text" id="youtube_link" name="youtube_link" placeholder="YouTube Link">
+          <button type="submit"
+            class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
+        </div>
+      </form>
+      {% else %}
+      <h5>Please login to upload text.</h5>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+</div>
+
+
 <script>
   function showLoading() {
     if ($('#customFile').val().length == 0) {

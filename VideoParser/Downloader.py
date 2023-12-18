@@ -20,8 +20,7 @@ class YouTubeDownloader:
     def __init__(self, url, celery_task=None):
         self.url = url
         self.video = YouTube(url)
-        if celery_task is not None:
-            self.celery_task = celery_task
+        self.celery_task = celery_task
 
     def download(self, filepath=None):
         if self.celery_task is not None:
