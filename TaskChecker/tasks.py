@@ -46,18 +46,24 @@ def check_task(task_id, user_id):
             change_task_state(task_id, cur_task_state)
             change_task_edit_date(task_id)
         time.sleep(10)
-
+    speech_texter_result = None
     with allow_join_result():
         try:
             task_result = task.get()
-        except:
+            task_graph = get_task_graph(task_id)
+            speech_texter_id = task_graph["speech_texter"][0]
+            speech_texter_result = app.AsyncResult(speech_texter_id).get()
+        except Exception as e:
             print(
                 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             )
+            print(e, flush=True)
             task_result = "FAILED"
 
         task_result = str(task_result).replace("'", "&#39;").replace('"', "&#34;")
     change_task_state(task_id, task_result)
     change_task_edit_date(task_id)
+    if speech_texter_result is not None:
+        change_input_text(task_id, speech_texter_result)
     return task_result
     # TODO: Write to DB

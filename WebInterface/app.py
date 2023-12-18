@@ -174,7 +174,11 @@ def profile_tasks():
     print("Profile tasks")
     tasks = get_tasks_of_user_by_id(current_user.id)
     results = tasks[["task_id", "task_name", "thumbnail", "type"]]
+    results = tasks[["task_id", "task_name", "thumbnail", "type"]]
 
+    results = results.rename(columns={"task_name": "name", "thumbnail": "url"})
+    print(results.columns, flush=True)
+    print("RESULTS: ", results, flush=True)
     results = results.rename(columns={"task_name": "name", "thumbnail": "url"})
     print(results.columns, flush=True)
     print("RESULTS: ", results, flush=True)
@@ -298,11 +302,15 @@ def upload_video():
         chain |= signature("speech2text", queue="speechtexter", app=celery)
         chain |= signature("summarize", queue="llm", app=celery)
         res = chain.apply_async()
-        # get the task id
         task_id = res.id
 
-        add_task_with_thumbnail(task_id, thumbnail, file_name, "video")
+        llm_id = res.id
+        speech_texter_id = res.parent.id
+        video_parser_id = res.parent.parent.id
+
+        add_task_with_thumbnail(task_id, thumbnail, file_name, "video", "a")
         add_entry_to_usertask(task_id, current_user.id)
+        add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
 
         check_task = celery.send_task(
             "check_task", args=[task_id, current_user.id], queue="taskchecker"
@@ -335,7 +343,7 @@ def upload_text():
 
         file_name = text[:20] + "..."
 
-        add_task_with_thumbnail(task_id, thumbnail, file_name, "text")
+        add_task_with_thumbnail(task_id, thumbnail, file_name, "text", text)
         add_entry_to_usertask(task_id, current_user.id)
 
         celery.send_task(
@@ -366,8 +374,14 @@ def upload_youtube():
         # TODO: get video title from youtube
         file_name = url
 
-        add_task_with_thumbnail(task_id, thumbnail, file_name, "video")
+
+        llm_id = res.id
+        speech_texter_id = res.parent.id
+        video_parser_id = res.parent.parent.id
+
+        add_task_with_thumbnail(task_id, thumbnail, file_name, "video", "a")
         add_entry_to_usertask(task_id, current_user.id)
+        add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
 
         celery.send_task(
             "check_task", args=[task_id, current_user.id], queue="taskchecker"
@@ -377,10 +391,11 @@ def upload_youtube():
     return render_template("upload_video.html")
 
 
-@flask_app.route("/text/<id>", methods=["GET", "POST"])
+@flask_app.route("/text/<task_id>", methods=["GET", "POST"])
 def upload_text_result(task_id):
-    if check_if_user_has_task(current_user.id, id):
-        return render_template("upload_text.html", task_id=id)
+    if check_if_user_has_task(current_user.id, task_id):
+        return render_template("upload_text.html", task_id=task_id)
+
     else:
         flash("You do not have permission to view this task.", category="error")
         return redirect("/")

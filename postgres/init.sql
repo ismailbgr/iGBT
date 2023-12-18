@@ -6,7 +6,16 @@ CREATE TABLE "public"."Task" (
     "task_start_date" timestamp NOT NULL,
     "task_last_edit_date" timestamp,
     "type" text NOT NULL,
+    "input_text" text,
     CONSTRAINT "Task_task_id" PRIMARY KEY ("task_id")
+) WITH (oids = false);
+
+
+CREATE TABLE "public"."TaskGraph" (
+    "task_id" text NOT NULL,
+    "video_parser" text,
+    "speech_texter" text,
+    "llm" text
 ) WITH (oids = false);
 
 
@@ -29,6 +38,8 @@ CREATE TABLE "public"."user" (
     CONSTRAINT "user_pkey" PRIMARY KEY ("user_id")
 ) WITH (oids = false);
 
+
+ALTER TABLE ONLY "public"."TaskGraph" ADD CONSTRAINT "TaskGraph_task_id_fkey" FOREIGN KEY (task_id) REFERENCES "Task"(task_id) ON DELETE CASCADE NOT DEFERRABLE;
 
 ALTER TABLE ONLY "public"."UserTask" ADD CONSTRAINT "UserTask_task_id_fkey" FOREIGN KEY (task_id) REFERENCES "Task"(task_id) ON DELETE CASCADE NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."UserTask" ADD CONSTRAINT "UserTask_user_id_fkey" FOREIGN KEY (user_id) REFERENCES "user"(user_id) ON DELETE CASCADE NOT DEFERRABLE;
