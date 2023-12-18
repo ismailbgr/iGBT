@@ -28,8 +28,8 @@
     <div class="grid-container">
         {% for row in tasks %}
 
-        <div class="w3-card-4 grid-item my-below-background-color" style="cursor:pointer;" onclick="goToVideo(` {{
-            row['name'] }}`)">
+        <div class="w3-card-4 grid-item my-below-background-color" style="cursor:pointer;"
+            onclick="goToVideo(`{{row['type'] }}`,`{{row['task_id'] }}`)">
             <img style="border-top-right-radius: 25px; border-top-left-radius: 25px;"
                 src="data:image/png;base64,{{ row['url'] }}">
             <div class="w3-container w3-center">
@@ -41,8 +41,8 @@
 </div>
 
 <script>
-    function goToVideo(task_id) {
-        window.location.href = "/video/" + task_id;
+    function goToVideo(type, task_id) {
+        window.location.href = "/" + type + "/" + task_id;
     }
 </script>
 

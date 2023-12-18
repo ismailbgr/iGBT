@@ -5,6 +5,7 @@ CREATE TABLE "public"."Task" (
     "task_name" text DEFAULT 'UNNAMED' NOT NULL,
     "task_start_date" timestamp NOT NULL,
     "task_last_edit_date" timestamp,
+    "type" text NOT NULL,
     CONSTRAINT "Task_task_id" PRIMARY KEY ("task_id")
 ) WITH (oids = false);
 
@@ -31,4 +32,3 @@ CREATE TABLE "public"."user" (
 
 ALTER TABLE ONLY "public"."UserTask" ADD CONSTRAINT "UserTask_task_id_fkey" FOREIGN KEY (task_id) REFERENCES "Task"(task_id) ON DELETE CASCADE NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."UserTask" ADD CONSTRAINT "UserTask_user_id_fkey" FOREIGN KEY (user_id) REFERENCES "user"(user_id) ON DELETE CASCADE NOT DEFERRABLE;
-

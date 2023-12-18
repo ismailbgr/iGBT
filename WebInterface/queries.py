@@ -106,7 +106,7 @@ def get_tasks_of_user_by_id(userid):
     # User: user_id, ad, soyad, email, telefon, saltedpassword, is_admin
     # UserTask: task_id, user_id
     query = (
-        'select "Task".task_id, "Task".thumbnail, "Task".result from "Task" inner join "UserTask" on "Task".task_id = "UserTask".task_id where "UserTask".user_id = '
+        'select "Task".task_id, "Task".result, "Task".task_start_date, "Task".task_last_edit_date, "Task".type, "Task".task_name,"Task".thumbnail from "Task" inner join "UserTask" on "Task".task_id = "UserTask".task_id where "UserTask".user_id = '
         + str(userid)
     )
     print(query, flush=True)
@@ -114,6 +114,12 @@ def get_tasks_of_user_by_id(userid):
     print(tasks, flush=True)
     tasks["task_id"] = tasks["task_id"].astype(str)
     tasks["result"] = tasks["result"].astype(str)
+    tasks["task_start_date"] = tasks["task_start_date"].astype(str)
+    tasks["task_last_edit_date"] = tasks["task_last_edit_date"].astype(str)
+    tasks["type"] = tasks["type"].astype(str)
+    tasks["task_name"] = tasks["task_name"].astype(str)
+    tasks["thumbnail"] = tasks["thumbnail"].astype(str)
+
     return tasks
 
 
@@ -143,10 +149,10 @@ def check_if_user_has_task(userid, taskid):
         return True
 
 
-def add_task_with_thumbnail(taskid, thumbnail, file_name):
+def add_task_with_thumbnail(taskid, thumbnail, file_name, type):
     current_date = pd.Timestamp.now()
 
-    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}');"
+    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}');"
     print(query, flush=True)
     engine.execute(text(query))
 
