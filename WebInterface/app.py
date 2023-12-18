@@ -374,6 +374,7 @@ def upload_youtube():
         # TODO: get video title from youtube
         file_name = url
 
+
         llm_id = res.id
         speech_texter_id = res.parent.id
         video_parser_id = res.parent.parent.id
@@ -394,6 +395,7 @@ def upload_youtube():
 def upload_text_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
         return render_template("upload_text.html", task_id=task_id)
+
     else:
         flash("You do not have permission to view this task.", category="error")
         return redirect("/")
