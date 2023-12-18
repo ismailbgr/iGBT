@@ -109,13 +109,17 @@ def convert_video_to_mp3(input_file):
 
 
 # youtube downloader
-@app.task(name="youtube_dl")
-def youtube_dl(url):
+@app.task(name="youtube_dl", bind=True)
+def youtube_dl(self, url):
+    """Downloads a youtube video and returns the path to the downloaded file.
+
+    Returns:
+        String: path of downloaded file
+    """
+
     current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
+    output_file = f"/data/{uuidname}.mp4"
     downloader = YouTubeDownloader(url)
-    downloader.download(f"/tmp/{uuidname}.mp4")
-    with open(f"/tmp/{uuidname}.mp4", "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data)
-    return b64
+    downloader.download(output_file)
+    return output_file
