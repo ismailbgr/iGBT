@@ -308,7 +308,7 @@ def upload_video():
         speech_texter_id = res.parent.id
         video_parser_id = res.parent.parent.id
 
-        add_task_with_thumbnail(task_id, thumbnail, file_name, "video", "a")
+        add_task_with_thumbnail(task_id, thumbnail, file_name, "video", "PARSING VIDEO")
         add_entry_to_usertask(task_id, current_user.id)
         add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
 
@@ -320,11 +320,15 @@ def upload_video():
     return render_template("upload_video.html")
 
 
-@flask_app.route("/video/<task_id>", methods=["GET", "POST"])
+@flask_app.route("/video/<task_id>", methods=["GET"])
 @login_required
 def upload_video_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
-        return render_template("upload_video.html", task_id=task_id)
+        # TODO: create an endpoint to check the status of the task
+        input_text = get_input_text(task_id).iloc[0]["input_text"]
+        return render_template(
+            "upload_video.html", task_id=task_id, input_text=input_text
+        )
     else:
         flash("You do not have permission to view this task.", category="error")
         return redirect("/")
@@ -374,7 +378,6 @@ def upload_youtube():
         # TODO: get video title from youtube
         file_name = url
 
-
         llm_id = res.id
         speech_texter_id = res.parent.id
         video_parser_id = res.parent.parent.id
@@ -394,8 +397,10 @@ def upload_youtube():
 @flask_app.route("/text/<task_id>", methods=["GET", "POST"])
 def upload_text_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
-        return render_template("upload_text.html", task_id=task_id)
-
+        input_text = get_input_text(task_id).iloc[0]["input_text"]
+        return render_template(
+            "upload_text.html", task_id=task_id, input_text=input_text
+        )
     else:
         flash("You do not have permission to view this task.", category="error")
         return redirect("/")

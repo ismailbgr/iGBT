@@ -182,3 +182,11 @@ def add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id):
     query = f"insert into \"TaskGraph\" (llm, speech_texter, video_parser, task_id) values('{llm_id}', '{speech_texter_id}', '{video_parser_id}', '{task_id}');"
     print(query)
     engine.execute(text(query))
+
+
+def get_input_text(task_id):
+    query = f"select input_text from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    input_text = pd.read_sql_query(query, con=engine)
+    print(input_text)
+    return input_text
