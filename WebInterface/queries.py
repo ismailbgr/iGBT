@@ -149,10 +149,10 @@ def check_if_user_has_task(userid, taskid):
         return True
 
 
-def add_task_with_thumbnail(taskid, thumbnail, file_name, type):
+def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
     current_date = pd.Timestamp.now()
 
-    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}');"
+    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}');"
     print(query, flush=True)
     engine.execute(text(query))
 
@@ -174,5 +174,11 @@ def change_task_state(task_id, state):
 def change_task_edit_date(task_id):
     current_date = pd.Timestamp.now()
     query = f"update \"Task\" set task_last_edit_date = '{current_date}' where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+
+
+def add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id):
+    query = f"insert into \"TaskGraph\" (llm, speech_texter, video_parser, task_id) values('{llm_id}', '{speech_texter_id}', '{video_parser_id}', '{task_id}');"
     print(query)
     engine.execute(text(query))

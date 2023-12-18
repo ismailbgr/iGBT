@@ -36,6 +36,7 @@ app = Celery(
 @app.task(name="check_task")
 def check_task(task_id, user_id):
     task = app.AsyncResult(task_id)
+    print("task", type(task), flush=True)
     cur_task_state = task.state
 
     while not task.ready():
@@ -50,14 +51,19 @@ def check_task(task_id, user_id):
     with allow_join_result():
         try:
             task_result = task.get()
-        except:
+            task_graph = get_task_graph(task_id)
+            speech_texter_id = task_graph["speech_texter"][0]
+            speech_texter_result = app.AsyncResult(speech_texter_id).get()
+        except Exception as e:
             print(
                 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             )
+            print(e, flush=True)
             task_result = "FAILED"
 
         task_result = str(task_result).replace("'", "&#39;").replace('"', "&#34;")
     change_task_state(task_id, task_result)
     change_task_edit_date(task_id)
+    change_input_text(task_id, speech_texter_result)
     return task_result
     # TODO: Write to DB
