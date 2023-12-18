@@ -17,11 +17,16 @@ class YouTubeDownloader:
         Downloads the video to the specified filepath
     """
 
-    def __init__(self, url):
+    def __init__(self, url, celery_task=None):
         self.url = url
         self.video = YouTube(url)
+        if celery_task is not None:
+            self.celery_task = celery_task
 
     def download(self, filepath=None):
+        if self.celery_task is not None:
+            self.celery_task.update_state(state="STARTED")
+
         if filepath is None:
             filepath = self.video.title + ".mp4"
         stream = self.video.streams.get_lowest_resolution()
