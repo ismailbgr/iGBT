@@ -2,6 +2,7 @@ on:
   push:
     branches:
     - '[0-9]+.\-.*'
+  workflow_dispatch:
 
 jobs:
   add-todo:
