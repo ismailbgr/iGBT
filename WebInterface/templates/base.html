@@ -37,7 +37,7 @@
 
         .fa-video-camera,
         .fa-file-text,
-        .fa-youtube,
+        .fa-play,
         .fa-id-card-o {
             font-size: 200px;
             color: #7D6E83 !important;
@@ -68,6 +68,10 @@
         .w3-hide-small .w3-dropdown-content {
             transform: translate(-80px, 10px);
         }
+
+        #content {
+            margin-top: 51px;
+        }
     </style>
 
     <script src="https://unpkg.com/htmx.org@1.9.9"
@@ -78,7 +82,7 @@
     {% endblock %}
 </head>
 
-<body>
+<body class="my-below-background-color">
     <!-- Navbar -->
     <div class="w3-top">
         <div class="w3-bar my-bg-color w3-card w3-left-align w3-large">
@@ -87,13 +91,16 @@
                     class="fa fa-bars"></i></a>
 
 
-
+            <!-- 
             <a href="/"
-                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white {% if request.path == '/' %} clicked-page-button {% endif %}">Home</a>
+                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white {% if request.path == '/' %} clicked-page-button {% endif %}">Home</a> -->
 
-            <a href="/about_us"
-                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white{% if request.path == '/about_us' %} clicked-page-button {% endif %}">About
-                Us</a>
+
+            {% if request.path != '/' %}
+            <a href="/" class="w3-bar-item w3-button w3-hide-small w3-padding-large"
+                style=":hover{background-color: #DFD3C3 !important;}">iGBT
+            </a>
+            {% endif %}
 
 
             {% if current_user.is_authenticated %}
@@ -116,11 +123,14 @@
 
             {% else %}
             <a href="/signin"
-                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white{% if request.path == '/signin' %} clicked-page-button {% endif %}">Login
+                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-right{% if request.path == '/signin' %} clicked-page-button {% endif %}">Login
             </a>
 
             {% endif %}
 
+            <a href="/about_us"
+                class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-right {% if request.path == '/about_us' %} clicked-page-button {% endif %}">About
+                Us</a>
         </div>
 
         <!-- Navbar on small screens -->
@@ -172,10 +182,12 @@
     </div>
 
     <!-- Header -->
+    {% if request.path == '/' %}
     <header class="w3-container my-bg-color w3-center" style="padding:128px 16px">
         <h1 class="w3-margin w3-jumbo my-header-text-color">iGBT</h1>
         <p class="w3-xlarge my-header-text-color">Summarizer by LLM</p>
     </header>
+    {% endif %}
 
 
 
@@ -187,12 +199,12 @@
 
 
     <!-- Footer -->
-    <footer class="w3-container w3-padding-64 w3-center footer">
+    <!-- <footer class="w3-container w3-padding-64 w3-center footer">
         <div id="footer">
             {% block footer %}
             {% endblock %}
         </div>
-        <!-- <div class="w3-xlarge w3-padding-32">
+         <div class="w3-xlarge w3-padding-32">
     <i class="fa fa-facebook-official w3-hover-opacity"></i>
     <i class="fa fa-instagram w3-hover-opacity"></i>
     <i class="fa fa-snapchat w3-hover-opacity"></i>
@@ -222,6 +234,16 @@
                 document.getElementById("customFile").focus();
             };
         })(), true);
+    </script>
+    <script>
+        function accordion(id) {
+            var x = document.getElementById(id);
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
     </script>
 
 </body>

@@ -9,11 +9,26 @@
 
     <div class="w3-twothird">
       <h1>Summarize Video</h1>
-      <h5 class="w3-padding-32">Processing video:</h5>
-      <!-- we have task_id now, use htmx to update div every 1 sec-->
-      <div id="task_id" hx-get="/check_video_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
-        <p>Task ID: <span hx-swap="innerHTML">Loading...</span></p>
+
+      <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align">
+        Input Text</button>
+
+      <div id="Input" class="w3-container w3-hide">
+        <p>{{ input_text }}</p>
       </div>
+
+      <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align">
+        Summarized Text</button>
+
+      <div id="Output" class="w3-container w3-hide">
+        <div id="task_id" hx-get="/check_video_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
+          <p>Task ID: <span hx-swap="innerHTML">Loading...</span></p>
+        </div>
+      </div>
+
+
+
+
     </div>
   </div>
 </div>
