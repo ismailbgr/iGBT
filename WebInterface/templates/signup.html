@@ -1,31 +1,49 @@
-{% extends "base.html" %} {% block title %} Allergen Detector {% endblock %} {% block content %}
-<div style="justify-items: center; text-align: center;" class="my-below-background-color">
-  <form class="form-signin" method="POST" action="/signup">
+{% extends "base.html" %}
+{% block head %}
+<style>
+  #content {
+    padding-top: 10%;
+    padding-bottom: 10%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+</style>
+{% endblock %} {% block title %} Allergen Detector {% endblock %} {% block content %}
+<div style="display: flex;
+flex-direction: column;
+align-items: center;" class="my-below-background-color">
 
-    <br />
+  <div style="box-shadow: 0px 0px 7px 5px rgba(0, 0, 0, 0.35);
+    border-radius: 15px;
+    padding: 50px;">
 
-    <h1 class="h3 mb-3 font-weight-normal text-center">Kayıt Ol</h1>
-    <label for="inputName" class="sr-only">Ad*</label>
-    <input type="text" style="width: 200px;" id="inputName" name="name" class="form-control mx-auto" placeholder="Ad"
-      required autofocus>
-    <br />
-    <label for="inputSurname" class="sr-only">Soyad*</label>
-    <input type="text" style="width: 200px;" id="inputSurname" name="surname" class="form-control mx-auto"
-      placeholder="Soyad" required autofocus>
-    <br />
-    <label for="inputPhone" class="sr-only">Telefon Numarası</label>
-    <input type="text" style="width: 200px;" id="inputPhone" name="phone" class="form-control mx-auto"
-      placeholder="Telefon Numarası" autofocus>
-    <br />
-    <label for="inputEmail" class="sr-only">E-Posta*</label>
-    <input type="email" style="width: 200px;" id="inputEmail" name="username" class="form-control mx-auto"
-      placeholder="E-Posta" required autofocus>
-    <br />
-    <label for="inputPassword" class="sr-only">Şifre*</label>
-    <input type="password" style="width: 200px;" id="inputPassword" name="password" class="form-control mx-auto"
-      placeholder="Şifre" required>
+    <form class="form-signin" method="POST" action="/signup">
 
-    <button class="btn btn-lg btn-secondary btn-block w3-margin-top" type="submit">Kayıt Ol</button>
+      <br />
+
+      <h1 class="h3 mb-3 font-weight-normal text-center">Kayıt Ol</h1>
+      <label for="inputName" class="sr-only">Ad*</label>
+      <input type="text" style="width: 200px;" id="inputName" name="name" class="form-control mx-auto" placeholder="Ad"
+        required autofocus>
+      <br />
+      <label for="inputSurname" class="sr-only">Soyad*</label>
+      <input type="text" style="width: 200px;" id="inputSurname" name="surname" class="form-control mx-auto"
+        placeholder="Soyad" required autofocus>
+      <br />
+      <label for="inputPhone" class="sr-only">Telefon Numarası</label>
+      <input type="text" style="width: 200px;" id="inputPhone" name="phone" class="form-control mx-auto"
+        placeholder="Telefon Numarası" autofocus>
+      <br />
+      <label for="inputEmail" class="sr-only">E-Posta*</label>
+      <input type="email" style="width: 200px;" id="inputEmail" name="username" class="form-control mx-auto"
+        placeholder="E-Posta" required autofocus>
+      <br />
+      <label for="inputPassword" class="sr-only">Şifre*</label>
+      <input type="password" style="width: 200px;" id="inputPassword" name="password" class="form-control mx-auto"
+        placeholder="Şifre" required>
+
+      <button class="btn btn-lg btn-secondary btn-block w3-margin-top" type="submit">Kayıt Ol</button>
+    </form>
+  </div>
 </div>
-</form>
 {% endblock %}
