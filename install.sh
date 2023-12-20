@@ -14,7 +14,7 @@ sudo printf "${GREEN}[+] Sudo Privileges Acquired${NC}\n"
 
 printf "${YELLOW}[i] Creating SharedData Directory${NC}\n"
 mkdir SharedData > /dev/null 2>&1
-chown -R $USER:$USER SharedData
+sudo chown -R $USER:$USER SharedData
 printf "${GREEN}[+] SharedData Directory Created${NC}\n"
 
 #check if docker is installed
