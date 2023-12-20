@@ -1,11 +1,33 @@
 # iGBT
+
 This is the thesis of Me, Gökalp Coşgun, Talha Akbulut and Muhammed Berkay Şan. It is a system that allows user to summarize various media contents including videos and voice recordings.
 
-# Installation
+- [iGBT](#igbt)
+  - [Installation](#installation)
+  - [Testing](#testing)
 
-To start all services run 
+## Installation
+
+To install run
+
 ```bash
-docker-compose up
+bash install.sh
 ```
 
-you can find testing utilities on `test` folder.
+To Deploy run
+
+```bash
+bash start.sh
+```
+
+Services with user interfaces will be available at:
+
+- Frontend: <http://localhost:3000>
+- Flower: <http://localhost:5555>
+- Adminer: <http://localhost:8080>
+
+<!-- TODO: Add documentation for all services -->
+
+## Testing
+
+> you can find testing utilities on `test` folder.
