@@ -109,17 +109,17 @@ services:
     volumes:
       - ./config:/app/config
 
-  redisinsight:
-    image: redislabs/redisinsight:latest
-    ports:
-      - 8001:8001
-    user: 1000:1000
-    hostname: redisinsight
-    depends_on:
-      - redis
-    volumes:
-      - ./config:/app/config
-      - ./SharedData/:/data
+  # redisinsight:
+  #   image: redislabs/redisinsight:latest
+  #   ports:
+  #     - 8001:8001
+  #   user: 1000:1000
+  #   hostname: redisinsight
+  #   depends_on:
+  #     - redis
+  #   volumes:
+  #     - ./config:/app/config
+  #     - ./SharedData/:/data
 
   webinterface:
     build:
