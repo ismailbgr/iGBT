@@ -173,17 +173,29 @@ def profile_update():
 def profile_tasks():
     print("Profile tasks")
     tasks = get_tasks_of_user_by_id(current_user.id)
-    results = tasks[["task_id", "task_name", "thumbnail", "type"]]
-    results = tasks[["task_id", "task_name", "thumbnail", "type"]]
+    results = tasks[
+        [
+            "task_id",
+            "task_name",
+            "thumbnail",
+            "type",
+            "task_start_date",
+            "task_last_edit_date",
+        ]
+    ]
+    results = results.sort_values(by="task_start_date", ascending=False)
 
     results = results.rename(columns={"task_name": "name", "thumbnail": "url"})
-    print(results.columns, flush=True)
-    print("RESULTS: ", results, flush=True)
+    # print(results.columns, flush=True)
+    # print("RESULTS: ", results, flush=True)
     results = results.rename(columns={"task_name": "name", "thumbnail": "url"})
-    print(results.columns, flush=True)
-    print("RESULTS: ", results, flush=True)
+    # print(results.columns, flush=True)
+    # print("RESULTS: ", results, flush=True)
     results = json.loads(results.to_json(orient="records"))
-    print("SHAPE: ", len(results), flush=True)
+    # print("SHAPE: ", len(results), flush=True)
+    for i in range(len(results)):
+        if len(results[i]["name"]) > 20:
+            results[i]["name"] = results[i]["name"][:17] + "..."
     return render_template("profile_tasks.html", tasks=results)
 
 
@@ -325,9 +337,18 @@ def upload_video():
 def upload_video_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
         # TODO: create an endpoint to check the status of the task
-        input_text = get_input_text(task_id).iloc[0]["input_text"]
+        task = get_task_by_id(task_id)
+        input_text = task.iloc[0]["input_text"]
+        start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
+        last_edit_date = task.iloc[0]["task_last_edit_date"].strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
         return render_template(
-            "upload_video.html", task_id=task_id, input_text=input_text
+            "upload_text.html",
+            task_id=task_id,
+            input_text=input_text,
+            start_date=start_date,
+            last_edit_date=last_edit_date,
         )
     else:
         flash("You do not have permission to view this task.", category="error")
@@ -397,9 +418,18 @@ def upload_youtube():
 @flask_app.route("/text/<task_id>", methods=["GET", "POST"])
 def upload_text_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
-        input_text = get_input_text(task_id).iloc[0]["input_text"]
+        task = get_task_by_id(task_id)
+        input_text = task.iloc[0]["input_text"]
+        start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
+        last_edit_date = task.iloc[0]["task_last_edit_date"].strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
         return render_template(
-            "upload_text.html", task_id=task_id, input_text=input_text
+            "upload_text.html",
+            task_id=task_id,
+            input_text=input_text,
+            start_date=start_date,
+            last_edit_date=last_edit_date,
         )
     else:
         flash("You do not have permission to view this task.", category="error")
