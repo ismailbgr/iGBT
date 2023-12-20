@@ -340,8 +340,10 @@ def upload_video_result(task_id):
         task = get_task_by_id(task_id)
         input_text = task.iloc[0]["input_text"]
         start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
-        last_edit_date = task.iloc[0]["task_last_edit_date"].strftime(
-            "%d/%m/%Y %H:%M:%S"
+        last_edit_date = (
+            task.iloc[0]["task_last_edit_date"].strftime("%d/%m/%Y %H:%M:%S")
+            if task.iloc[0]["task_last_edit_date"] is not None
+            else None
         )
         return render_template(
             "upload_text.html",
@@ -421,8 +423,10 @@ def upload_text_result(task_id):
         task = get_task_by_id(task_id)
         input_text = task.iloc[0]["input_text"]
         start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
-        last_edit_date = task.iloc[0]["task_last_edit_date"].strftime(
-            "%d/%m/%Y %H:%M:%S"
+        last_edit_date = (
+            task.iloc[0]["task_last_edit_date"].strftime("%d/%m/%Y %H:%M:%S")
+            if task.iloc[0]["task_last_edit_date"] is not None
+            else None
         )
         return render_template(
             "upload_text.html",
