@@ -4,6 +4,7 @@ This is the thesis of Me, Gökalp Coşgun, Talha Akbulut and Muhammed Berkay Şa
 
 - [iGBT](#igbt)
   - [Installation](#installation)
+  - [Documentation](#documentation)
   - [Testing](#testing)
 
 ## Installation
@@ -27,6 +28,10 @@ Services with user interfaces will be available at:
 - Adminer: <http://localhost:8080>
 
 <!-- TODO: Add documentation for all services -->
+
+## Documentation
+
+- [Introduction](docs/Introduction.md)
 
 ## Testing
 
