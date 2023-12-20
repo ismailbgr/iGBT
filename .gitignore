@@ -169,3 +169,5 @@ config/ollama/*
 
 config/postgres/*
 SharedData/*
+
+.obsidian
