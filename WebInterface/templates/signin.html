@@ -9,7 +9,7 @@
     }
 </style>
 {% endblock %}
-{% block title %} Allergen Detector {% endblock %} {% block content %}
+{% block title %} Sign in {% endblock %} {% block content %}
 <div class="my-below-background-color" style="    display: flex;
 flex-direction: column;
 align-items: center;">
@@ -19,20 +19,20 @@ align-items: center;">
 
         <form class="form-signin" method="POST" action="/signin">
             <br />
-            <h1 class="h3 mb-3 font-weight-normal text-center">Giriş Yap</h1>
-            <label for="inputEmail" class="sr-only">E-Posta</label>
+            <!-- <h1 class="h3 mb-3 font-weight-normal text-center">Sign in</h1> -->
+            <label for="inputEmail" class="sr-only">E-Mail</label>
             <input type="" style="width: 200px;" id="inputEmail" name="username" class="form-control mx-auto"
-                placeholder="E-Posta" required autofocus>
+                placeholder="E-Mail" required autofocus>
             <br />
             <label for="inputPassword" class="sr-only">Şifre</label>
             <input type="password" style="width: 200px;" id="inputPassword" name="password" class="form-control mx-auto"
-                placeholder="Şifre" required>
+                placeholder="Password" required>
             <br />
-            <a href="/signup">Hesabınız yok mu? Kayıt Olun</a>
+            <a href="/signup">Don't have an account? Sign up!</a>
             <br />
             <br />
             <div style="align-items: center;display: flex;justify-content: center;">
-                <button class="btn btn-lg btn-secondary btn-block" type="submit">Giriş Yap</button>
+                <button class="btn btn-lg btn-secondary btn-block" type="submit">Sign in</button>
             </div>
     </div>
 </div>
