@@ -122,6 +122,12 @@ def load_user(user_id):
     return User.get_by_id(user_id)
 
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    flash("Please log in to access this page.", category="error")
+    return redirect("/signin")
+
+
 # create a route for home page
 @flask_app.route("/")
 def home():
@@ -290,6 +296,7 @@ def signin():
 
 
 @flask_app.route("/upload_video", methods=["GET", "POST"])
+@login_required
 def upload_video():
     if request.method == "POST":
         # Check if the post request has the file part
@@ -358,6 +365,7 @@ def upload_video_result(task_id):
 
 
 @flask_app.route("/upload_text", methods=["GET", "POST"])
+@login_required
 def upload_text():
     if request.method == "POST":
         text = request.form["w3review"]
@@ -386,6 +394,7 @@ def upload_text():
 
 
 @flask_app.route("/upload_youtube", methods=["GET", "POST"])
+@login_required
 def upload_youtube():
     if request.method == "POST":
         url = request.form["youtube_link"]
@@ -423,6 +432,7 @@ def upload_youtube():
 
 
 @flask_app.route("/text/<task_id>", methods=["GET", "POST"])
+@login_required
 def upload_text_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
         task = get_task_by_id(task_id)
@@ -447,6 +457,7 @@ def upload_text_result(task_id):
 
 # TODO: return progress if available
 @flask_app.route("/check_text_status/<task_id>")
+@login_required
 def check_text_status(task_id):
     task = celery.AsyncResult(task_id)
 
@@ -463,6 +474,7 @@ def check_text_status(task_id):
 
 
 @flask_app.route("/check_video_status/<task_id>")
+@login_required
 def check_video_status(task_id):
     task = celery.AsyncResult(task_id)
 
