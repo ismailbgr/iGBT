@@ -31,7 +31,7 @@ Services with user interfaces will be available at:
 
 ## Documentation
 
-- [Introduction](docs/Introduction.md)
+- [Documentation](docs/Introduction.md)
 
 ## Testing
 
