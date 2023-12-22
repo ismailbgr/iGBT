@@ -86,7 +86,7 @@
 
 
 {% block content %}
-<div style="display: flex; align-items: center;     flex-direction: column;">
+<div style="display: flex; align-items: center; flex-direction: column; margin-bottom: 50px;">
   <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container input-cards">
     <div class="w3-content">
       <div class="w3-third w3-center">
@@ -166,7 +166,7 @@
           <div class="w3-container">
             <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
             <label for="text"></label>
-            <input class="w3review" type="text" id="youtube_link" name="youtube_link">
+            <textarea class="w3review" type="text" id="youtube_link" name="youtube_link"></textarea>
             <button type="submit"
               class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
@@ -184,10 +184,10 @@
 
 <script>
   function showLoading() {
-    if ($('#customFile').val().length == 0) {
+    var customFile = document.getElementById('customFile');
+    if (customFile.value.length == 0) {
       alert("Please upload a video file!");
     } else {
-
       document.getElementById('loading-spinner').style.display = 'block';
       document.getElementById('loading-overlay').style.display = 'block';
     }

@@ -66,4 +66,3 @@ def check_task(task_id, user_id):
     if speech_texter_result is not None:
         change_input_text(task_id, speech_texter_result)
     return task_result
-    # TODO: Write to DB
