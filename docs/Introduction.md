@@ -203,7 +203,7 @@ The application will then process the input and return the summary in result pag
 services are called on following order
 
 
-        ```mermaid
+``` mermaid
     
         graph TB;          
         WebInterface --> VideoParser;
@@ -212,5 +212,5 @@ services are called on following order
         SpeechTexter --> LLM;
         LLM --> WebInterface;
 
-    ```
+```
 
