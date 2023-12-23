@@ -17,6 +17,7 @@ Currently there are 10 services:
 - **[SpeechTexter](#speechtexter)**: The speech texter is a service that converts speech to text. It communicates with the reqired APIs to perform the conversion.
 - **[VideoParser](#videoparser)**: The video parser is a service that processes a given video.
 - **[LLM](#llm)**: The LLM is a service that receives a text and produces a summary of it. It communicates with the reqired 3rd or 1st party APIs (such as Ollama) to perform the conversion.
+- **[TaskChecker](#taskchecker)**: The task checker is a service that checks the status of a task. It periodically checks the status of the tasks and updates the database accordingly.
 - **Database**: The database is a PostgreSQL database. It is used to store the data of the application.
 - **Adminer**: Adminer is a web application that allows the user to interact with the database. It is built with Flask and sends requests Celery workers.
 
@@ -149,4 +150,67 @@ res = celery_app.send_task("summarize", args=["text"])
 
 print(res.get())
 
+
 ```
+
+### TaskChecker
+
+#### Usage
+
+TaskChecker is a service that checks the status of a task. It periodically checks the status of the tasks and updates the database accordingly.
+
+##### Tasks
+
+###### check_task
+
+```python
+
+@app.task(name="check_task")
+def check_task(task_id, user_id):
+...
+
+```
+
+this method is used to check the status of a task. It receives the task id and the user id. It checks the status of the task, if it is finished, it updates the database. if not, it reschedules itself to be executed after 5 seconds. can be called like this:
+
+
+```python
+
+res = celery_app.send_task("check_task", args=[task_id, user_id])
+
+print(res.get())
+
+```
+
+> :warning: This service's rescheduling is provided by Python's `time.sleep` method. This is not the best way to do it and it would be better to use celery's inbuilt rescheduling mechanism. Because of the this, the service might be changed significantly in the future.
+
+
+### WebInterface
+
+#### Usage
+
+
+WebInterface is a web application that allows the user to interact with the system. It is built with Flask and sends requests Celery workers.
+
+User can:
+
+1. Upload a video
+2. Upload a text
+3. Give a youtube link
+
+The application will then process the input and return the summary in result page.
+
+services are called on following order
+
+
+        ```mermaid
+    
+    graph TB
+WebInterface --> VideoParser
+WebInterface --> TaskChecker
+VideoParser --> SpeechTexter
+SpeechTexter --> LLM
+LLM --> WebInterface
+
+    ```
+
