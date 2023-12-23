@@ -205,12 +205,12 @@ services are called on following order
 
         ```mermaid
     
-    graph TB
-WebInterface --> VideoParser
-WebInterface --> TaskChecker
-VideoParser --> SpeechTexter
-SpeechTexter --> LLM
-LLM --> WebInterface
+        graph TB;          
+        WebInterface --> VideoParser;
+        WebInterface --> TaskChecker;
+        VideoParser --> SpeechTexter;
+        SpeechTexter --> LLM;
+        LLM --> WebInterface;
 
     ```
 
