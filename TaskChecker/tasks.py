@@ -1,4 +1,4 @@
-from celery import Celery, states
+from celery import Celery, current_task, states
 import time
 import yaml
 from sqlalchemy import create_engine
@@ -14,7 +14,7 @@ print("config: ", config)
 
 
 ############################################################################################################
-######################################### DATABASE##########################################################
+######################################### DATABASE #########################################################
 ############################################################################################################
 
 import queries
@@ -35,6 +35,7 @@ app = Celery(
 
 @app.task(name="check_task")
 def check_task(task_id, user_id):
+    current_task.update_state(state=states.STARTED)
     task = app.AsyncResult(task_id)
     cur_task_state = task.state
 
