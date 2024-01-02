@@ -32,3 +32,7 @@ if ! [ -x "$(command -v docker)" ]; then
 else
     printf "${GREEN}[+] Docker Already Installed${NC}\n"
 fi
+
+printf "${YELLOW}[i] Building Docker Compose${NC}\n"
+sudo docker-compose build
+printf "${GREEN}[+] Docker Compose Built${NC}\n"
