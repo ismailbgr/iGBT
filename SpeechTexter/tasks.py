@@ -31,7 +31,10 @@ def speech2text(
 ):
     output_file = input_file_path + ".txt"
 
-    current_task.update_state(state=states.STARTED)
+    try:
+        current_task.update_state(state=states.STARTED)
+    except Exception as e:
+        print(f" State update failed: {e}", flush=True)
     Speech2Text(
         input_file_path, output_file, language_code, model_name
     ).speech_to_text()

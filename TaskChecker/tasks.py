@@ -35,7 +35,11 @@ app = Celery(
 
 @app.task(name="check_task")
 def check_task(task_id, user_id):
-    current_task.update_state(state=states.STARTED)
+    try:
+        current_task.update_state(state=states.STARTED)
+    except Exception as e:
+        print(f" State update failed: {e}", flush=True)
+        
     task = app.AsyncResult(task_id)
     cur_task_state = task.state
 

@@ -30,5 +30,11 @@ def summarize(text):
     print("summarizing...")
     print("text: ", text)
     # change task state to started
-    current_task.update_state(state=states.STARTED)
-    return llm.get_answer(text)
+    try:
+        current_task.update_state(state=states.STARTED)
+    except Exception as e:
+        print(f" State update failed: {e}", flush=True)
+
+    answer = llm.get_answer(text)
+
+    return answer
