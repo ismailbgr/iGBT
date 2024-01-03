@@ -9,8 +9,10 @@
       <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Input Text</button>
 
-      <div id="Input" class="w3-container w3-hide akordiyon-cikti">
-        <div>{{ input_text }}</div>
+      <div id="Input" class="w3-container w3-hide akordiyon-cikti w3-show">
+        <div id="task_id" hx-get="/check_video_text_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
+          <p><span hx-swap="innerHTML">Loading...</span></p>
+        </div>
       </div>
 
       <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align akordiyon-buton ">

@@ -1,3 +1,4 @@
+from io import StringIO
 from flask import Flask, render_template, request, redirect, url_for, flash
 import pandas as pd
 import json
@@ -105,7 +106,7 @@ class User(UserMixin):
         if from_server == "ERRORAUTHENTICATION":
             return None
         else:
-            user_data = pd.read_json(from_server)
+            user_data = pd.read_json(StringIO(from_server))
             user = User(
                 user_data["user_id"][0],
                 user_data["ad"][0],
@@ -295,7 +296,7 @@ def signin():
     return render_template("signin.html")
 
 
-@flask_app.route("/upload_video", methods=["GET", "POST"])
+@flask_app.route("/upload_video", methods=["POST"])
 @login_required
 def upload_video():
     if request.method == "POST":
@@ -331,7 +332,7 @@ def upload_video():
         add_entry_to_usertask(task_id, current_user.id)
         add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
 
-        check_task = celery.send_task(
+        celery.send_task(
             "check_task", args=[task_id, current_user.id], queue="taskchecker"
         )
         # redirect to the check status page
@@ -353,7 +354,7 @@ def upload_video_result(task_id):
             else None
         )
         return render_template(
-            "upload_text.html",
+            "upload_video.html",
             task_id=task_id,
             input_text=input_text,
             start_date=start_date,
@@ -463,6 +464,27 @@ def check_text_status(task_id):
 
     if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
         result = get_task_by_id(task_id).iloc[0]["result"]
+        print("RESULT: ", result, flush=True)
+        if result != "0":
+            return result, 286
+
+    print(task.state)
+    if task.state == "SUCCESS" or task.state == "FAILURE":
+        return task.get(), 286
+    return task.state
+
+
+@flask_app.route("/check_video_text_status/<task_id>")
+@login_required
+def check_video_text_status(task_id):
+    task_graph = get_task_graph(task_id)
+    speech_texter_id = task_graph["speech_texter"][0]
+    task = celery.AsyncResult(speech_texter_id)
+    print(task.state)
+    if task.state == "PENDING" and check_if_user_has_task(
+        current_user.id, speech_texter_id
+    ):
+        result = get_task_by_id(speech_texter_id).iloc[0]["result"]
         print("RESULT: ", result, flush=True)
         if result != "0":
             return result, 286

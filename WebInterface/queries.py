@@ -190,3 +190,11 @@ def get_input_text(task_id):
     input_text = pd.read_sql_query(query, con=engine)
     print(input_text)
     return input_text
+
+
+def get_task_graph(taskid):
+    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
+    print(query, flush=True)
+    tasks = pd.read_sql_query(query, con=engine)
+    print(tasks, flush=True)
+    return tasks

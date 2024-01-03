@@ -97,7 +97,7 @@
         <h1>Summarize Video</h1>
         {% if current_user.is_authenticated %}
         <h5 class="w3-padding-32">Please upload the video that you want to summarize:</h5>
-        <form method="POST" enctype="multipart/form-data" action="upload_video">
+        <form method="POST" enctype="multipart/form-data" action="/upload_video">
           <div class="w3-container">
             <div class="w3-row">
               <div class="w3-col s12">
@@ -183,11 +183,14 @@
 
 
 <script>
-  function showLoading() {
+  function showLoading()
+  {
     var customFile = document.getElementById('customFile');
-    if (customFile.value.length == 0) {
+    if (customFile.value.length == 0)
+    {
       alert("Please upload a video file!");
-    } else {
+    } else
+    {
       document.getElementById('loading-spinner').style.display = 'block';
       document.getElementById('loading-overlay').style.display = 'block';
     }
@@ -198,7 +201,8 @@
   // create thumbnail of video
   var filepicker = document.getElementById('customFile');
 
-  filepicker.addEventListener('change', function (e) {
+  filepicker.addEventListener('change', function (e)
+  {
     var file = e.target.files[0];
     var fileURL = URL.createObjectURL(file);
     var video = document.createElement('video');
@@ -206,7 +210,8 @@
     video.src = fileURL;
     // seek video 10 seconds in for thumbnail
     video.currentTime = 1;
-    video.addEventListener('loadeddata', function () {
+    video.addEventListener('loadeddata', function ()
+    {
       var canvas = document.createElement('canvas');
       // canvas.width = video.videoWidth;
       // canvas.height = video.videoHeight;
