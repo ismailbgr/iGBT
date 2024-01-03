@@ -1,4 +1,4 @@
 celery==5.3.5
-pytube==15.0.0
 redis==5.0.1
+yt-dlp
 PyYAML

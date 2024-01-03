@@ -3,7 +3,7 @@ from celery import Celery, current_task, states
 import base64
 import uuid
 import yaml
-from Downloader import YouTubeDownloader
+# from Downloader import YouTubeDownloader
 import os
 
 # Load config
@@ -38,7 +38,11 @@ def convert_video_to_mp3(input_filepath):
     Returns:
         str: The path to the output mp3 audio file.
     """
-    current_task.update_state(state=states.STARTED)
+    try:
+        current_task.update_state(state=states.STARTED)
+    except Exception as e:
+        print(f" State update failed: {e}", flush=True)
+
     input_file_name = input_filepath.split("/")[-1].split(".")[0]
     output_file_path = f"/data/{input_file_name}.mp3"
 
@@ -58,54 +62,12 @@ def convert_video_to_mp3(input_filepath):
 
     result = subprocess.run(command, check=False, capture_output=True)
     if result.returncode != 0:
+        current_task.update_state(state=states.FAILURE)
         raise Exception(f"FFmpeg command failed with error: {result.stderr.decode()}")
 
     print(f"Conversion completed. Output file: {output_file_path}")
 
     return output_file_path
-
-
-@app.task(name="convert_video_to_mp3_file")
-def convert_video_to_mp3(input_file):
-    """
-    DEPRECATED use convert_video_to_mp3 instead
-    Converts a given mp4 video file to an mp3 audio file.
-
-
-    Args:
-        input_file (str): Base64 encoded mp4 video file.
-
-    Returns:
-        b64 (str): The base64 encoded mp3 audio file.
-    """
-    current_task.update_state(state=states.STARTED)
-    uuidname = str(uuid.uuid4())
-    with open(f"/tmp/{uuidname}.mp4", "wb") as f:
-        f.write(base64.b64decode(input_file))
-    input_file = f"/tmp/{uuidname}.mp4"
-    output_file = f"/tmp/{uuidname}.mp3"
-
-    # Construct the FFmpeg command
-    command = [
-        "ffmpeg",
-        "-i",
-        input_file,
-        "-vn",
-        "-acodec",
-        "libmp3lame",
-        "-q:a",
-        "4",
-        "-y",
-        output_file,
-    ]
-    # Run the FFmpeg command
-    subprocess.run(command, check=True)
-    print(f"Conversion completed. Output file: {output_file}")
-
-    with open(output_file, "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data)
-    return b64
 
 
 # youtube downloader
@@ -117,9 +79,33 @@ def youtube_dl(self, url):
         String: path of downloaded file
     """
 
+    import yt_dlp
+
     current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
     output_file = f"/data/{uuidname}.mp4"
-    downloader = YouTubeDownloader(url, self)
-    downloader.download(output_file)
-    return output_file
+
+    def download_progress_hook(d):
+        if d["status"] == "finished":
+            print("Done downloading")
+
+        if d["status"] == "downloading":
+            print(f"Downloading {d['filename']}")
+            print(f"ETA: {d['eta']}")
+            print(f"Speed: {d['speed']}")
+            print(f"Fraction downloaded: {d['_percent_str']}")
+
+    ydl_opts = {
+        "format": "mp4",
+        "progress_hooks": [download_progress_hook],
+        "outtmpl": output_file,
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+    print(f"Download completed. Output file: {output_file}")
+    mp3_file = convert_video_to_mp3(output_file)
+    print(f"Conversion completed. Output file: {mp3_file}")
+    current_task.update_state(state=states.SUCCESS)
+    return mp3_file
