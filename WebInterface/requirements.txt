@@ -6,6 +6,6 @@ psycopg2-binary
 SQLAlchemy==1.4.1
 redis==5.0.1
 uvicorn==0.24.0.post1
-pytube==15.0.0
 Pillow
 PyYAML
+yt-dlp
