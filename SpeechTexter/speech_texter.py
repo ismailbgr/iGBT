@@ -2,6 +2,7 @@ from google.cloud import speech
 import io
 import speech_recognition as sr
 from pydub import AudioSegment
+import whisper
 
 
 class Speech2Text:
@@ -10,13 +11,14 @@ class Speech2Text:
     """
 
     def __init__(
-        self, input_file, output_file, language_code, model_name, json_path=None
+        self, input_file, output_file, language_code, model_name, json_path=None , model_size=None
     ):
         self.input_file = input_file
         self.output_file = output_file
         self.language_code = language_code
         self.model_name = model_name
         self.json_path = json_path
+        self.model_size = model_size
         if self.model_name == "google":
             self.client = speech.SpeechClient.from_service_account_json(self.json_path)
             self.config = speech.RecognitionConfig(
@@ -24,7 +26,10 @@ class Speech2Text:
                 sample_rate_hertz=16000,
                 language_code=language_code,  # Change this to your desired language code
             )
-
+        elif self.model_name == "whisper":
+            if self.model_size is None:
+                raise Exception("Model size not specified for whisper:" + str(self.model_size))
+            self.model = whisper.load_model(self.model_size)
         elif self.model_name == "local":
             self.recognizer = sr.Recognizer()
         elif self.model_name == "mock":
@@ -89,6 +94,11 @@ class Speech2Text:
             except sr.RequestError:
                 print("Could not request results from Google Web Speech API")
                 raise sr.RequestError
+
+        elif self.model_name == "whisper":
+            result = self.model.transcribe(self.input_file)
+            with open(self.output_file, "w", encoding="utf-8") as text_file:
+                text_file.write(result["text"])
 
         elif self.model_name == "mock":
             text = """Johannes Gutenberg (1398 – 1468) was a German goldsmith and publisher who introduced printing to Europe. His introduction of mechanical movable

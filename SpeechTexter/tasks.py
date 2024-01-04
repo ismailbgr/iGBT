@@ -28,6 +28,7 @@ def speech2text(
     # TODO: speech2text should be able to detect language automatically
     # this issue requires issue #33 to be resolved
     model_name=config["speechtexter"]["model_name"],
+    model_size=config["speechtexter"]["model_size"],
 ):
     output_file = input_file_path + ".txt"
 
@@ -36,7 +37,7 @@ def speech2text(
     except Exception as e:
         print(f" State update failed: {e}", flush=True)
     Speech2Text(
-        input_file_path, output_file, language_code, model_name
+        input_file_path, output_file, language_code, model_name, model_size = model_size
     ).speech_to_text()
 
     with open(output_file, "r") as f:
