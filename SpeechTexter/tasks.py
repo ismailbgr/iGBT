@@ -26,11 +26,12 @@ def speech2text(
     input_file_path,
     language_code="en-US",
     model_name=config["speechtexter"]["model_name"],
+    model_size=config["speechtexter"]["model_size"],
 ):
     output_file = input_file_path + ".txt"
 
     Speech2Text(
-        input_file_path, output_file, language_code, model_name
+        input_file_path, output_file, language_code, model_name, model_size = model_size
     ).speech_to_text()
 
     with open(output_file, "r") as f:

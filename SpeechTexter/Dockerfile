@@ -1,13 +1,14 @@
-FROM alpine
+FROM bitnami/pytorch
+USER root
 
 # add app group
-RUN addgroup -S appuser -g 1000
+RUN groupadd appuser -g 1000
 
 # add app user
-RUN adduser -S appuser -G appuser -u 1000
+RUN useradd appuser -g appuser -u 1000
 
-RUN apk update && apk add python3-dev gcc libc-dev py3-pip
-RUN apk add ffmpeg flac
+RUN apt update && apt install -y python3-dev gcc libc-dev python3-pip
+RUN apt install -y ffmpeg flac 
 
 # install python dependencies
 COPY requirements.txt /tmp/requirements.txt
@@ -22,6 +23,7 @@ WORKDIR /app
 
 # chown
 RUN chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /.cache
 
 USER appuser
 
