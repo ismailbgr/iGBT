@@ -24,9 +24,7 @@ app = Celery(
 @app.task(name="speech2text")
 def speech2text(
     input_file_path,
-    language_code="en-US",
-    # TODO: speech2text should be able to detect language automatically
-    # this issue requires issue #33 to be resolved
+    language_code=None,
     model_name=config["speechtexter"]["model_name"],
     model_size=config["speechtexter"]["model_size"],
 ):

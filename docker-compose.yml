@@ -95,6 +95,7 @@ services:
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
+
     # deploy:
     #   resources:
     #     reservations:
@@ -138,11 +139,12 @@ services:
       - postgres
       - rabbitmq
       - taskchecker
-    develop:
-      watch:
-        - action: sync
-          path: ./WebInterface/
-          target: /app/
+
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./WebInterface/
+    #       target: /app/
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
