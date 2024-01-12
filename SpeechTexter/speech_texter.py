@@ -11,21 +11,41 @@ class Speech2Text:
     """
 
     def __init__(
-        self, input_file, output_file, language_code, model_name, json_path=None , model_size=None
+        self, input_file, output_file, language_code=None, model_name=None, json_path=None , model_size=None
     ):
         self.input_file = input_file
         self.output_file = output_file
         self.language_code = language_code
         self.model_name = model_name
+        if self.model_name is None:
+            self.model_name = "whisper"
+            print("Model name not specified. Using whisper as default model.")
+        if self.model_name != "whisper" and self.language_code is None:
+            language_model = whisper.load_model("tiny")
+            # audio = AudioSegment.from_mp3(input_file)
+            # output_name = input_file.split(".")[0] + ".wav"
+            # audio.export(output_name, format="wav")
+            # with sr.AudioFile(output_name) as audio:
+            #     audio = whisper.pad_or_trim(audio)
+            #     mel = whisper.log_mel_spectrogram(audio).to(language_model.device)
+            #     _, probs = language_model.detect_language(mel)
+            #     self.language_code = max(probs, key=probs.get)
+            audio = whisper.load_audio(input_file)
+            audio = whisper.pad_or_trim(audio)
+            mel = whisper.log_mel_spectrogram(audio).to(language_model.device)
+            _, probs = language_model.detect_language(mel)
+            self.language_code = max(probs, key=probs.get)
+            print("Language code not specified. Using " + self.language_code + " as default language code.")            
         self.json_path = json_path
         self.model_size = model_size
         if self.model_name == "google":
-            self.client = speech.SpeechClient.from_service_account_json(self.json_path)
-            self.config = speech.RecognitionConfig(
-                encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-                sample_rate_hertz=16000,
-                language_code=language_code,  # Change this to your desired language code
-            )
+            #self.client = speech.SpeechClient.from_service_account_json(self.json_path)
+            #self.config = speech.RecognitionConfig(
+            #    encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+            #    sample_rate_hertz=16000,
+            #    language_code=language_code,  # Change this to your desired language code
+            #)
+            self.recognizer = sr.Recognizer()
         elif self.model_name == "whisper":
             if self.model_size is None:
                 raise Exception("Model size not specified for whisper:" + str(self.model_size))
@@ -50,17 +70,37 @@ class Speech2Text:
             str: returns the transcribed text
         """
         if self.model_name == "google":
-            with io.open(self.input_file, "rb") as audio_file:
-                content = audio_file.read()
-            audio = speech.RecognitionAudio(content=content)
-            response = self.client.recognize(config=self.config, audio=audio)
-            transcribed_text = ""
-            for result in response.results:
-                transcribed_text += result.alternatives[0].transcript + "\n"
-            with open(self.output_file, "w", encoding="utf-8") as text_file:
-                text_file.write(transcribed_text)
+            def convert_mp3_to_wav(mp3_file, wav_file):
+                # Read the MP3 file
+                audio = AudioSegment.from_mp3(mp3_file)
+                # Export the audio to WAV format
+                audio.export(wav_file, format="wav")
 
-            return transcribed_text
+            mp3_file = self.input_file
+            wav_file = "audio.wav"
+            convert_mp3_to_wav(mp3_file, wav_file)
+            # Load the audio file
+            with sr.AudioFile(wav_file) as source:
+                audio_data = self.recognizer.record(source)
+            # Use Google Web Speech API to transcribe the audio
+            try:
+                transcribed_text = self.recognizer.recognize_google(
+                    audio_data, language=self.language_code
+                )
+                print("Transcription: ", transcribed_text)
+                # Save the transcribed text to the output file
+                with open(self.output_file, "w", encoding="utf-8") as text_file:
+                    text_file.write(transcribed_text)
+
+                print(f"Transcription completed. Text saved to {self.output_file}")
+                return transcribed_text
+            except sr.UnknownValueError:
+                print("Google Web Speech API could not understand the audio")
+                raise sr.UnknownValueError
+            except sr.RequestError:
+                print("Could not request results from Google Web Speech API")
+                raise sr.RequestError
+
 
         elif self.model_name == "local":
 
@@ -75,6 +115,8 @@ class Speech2Text:
             convert_mp3_to_wav(mp3_file, wav_file)
             # Load the audio file
             with sr.AudioFile(wav_file) as source:
+                sr.adjust_for_ambient_noise(source)
+                sr.dynamic_energy_threshold = True
                 audio_data = self.recognizer.record(source)
             # Use Google Web Speech API to transcribe the audio
             try:
