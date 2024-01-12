@@ -503,6 +503,35 @@ def check_video_text_status(task_id):
     return task.state
 
 
+@flask_app.route("/retry/<task_id>", methods=["GET", "POST"])
+@login_required
+def retry(task_id):
+    # print form
+    print("*" * 100)
+    print(request.form)
+    return redirect("/")
+
+
+@flask_app.route("/remove_text/<task_id>", methods=["GET", "POST"])
+@login_required
+def remove_task(task_id):
+    print(task_id)
+    #TODO: Terminate celery text task on task delete
+    remove_text_from_db(task_id) 
+    flash("Task removed.", category="success")
+    return redirect("/profile/tasks")
+
+
+@flask_app.route("/remove_video/<task_id>", methods=["GET", "POST"])
+@login_required
+def remove_video(task_id):
+    print(task_id)
+    #TODO: Terminate celery video task on task delete
+    remove_video_from_db(task_id)
+    flash("Task removed.", category="success")
+    return redirect("/profile/tasks")
+
+
 @flask_app.route("/check_video_status/<task_id>")
 @login_required
 def check_video_status(task_id):

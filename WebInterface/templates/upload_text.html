@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-
+<!-- add remove button to right corner -->
+<div class="w3-display-container w3-right">
+  <button onclick="window.location.href='/remove_text/{{ task_id }}'"
+    class="w3-button w3-display-topright w3-red">Delete</button>
+</div>
 <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container">
   <div class="w3-content">
 
@@ -10,7 +14,14 @@
       <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Input Text</button>
       <div id="Input" class="w3-container w3-hide akordiyon-cikti">
-        <div>{{ input_text }}</div>
+        <!-- create a form and put the input text in it. It must be editable. and there must be a retry button -->
+        <form method="POST" action="/retry/{{ task_id }}">
+          <div class="w3-container">
+            <label for="inputtext"></label>
+            <textarea class="w3review" name="w3review" rows="4" cols="50">{{ input_text }}</textarea>
+          </div>
+          <button type="submit" class="w3-button  submit-button w3-padding-large w3-large w3-margin-top">Retry</button>
+        </form>
       </div>
 
       <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align akordiyon-buton ">

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-
+<!-- add remove button to right corner -->
+<div class="w3-display-container w3-right">
+  <button onclick="window.location.href='/remove_text/{{ task_id }}'"
+    class="w3-button w3-display-topright w3-red">Delete</button>
+</div>
 <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container">
   <div class="w3-content">
 

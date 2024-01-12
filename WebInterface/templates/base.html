@@ -44,6 +44,22 @@
 
         }
 
+        .submit-button {
+            background-color: #7D6E83;
+            color: white;
+        }
+
+        .w3review {
+            width: 100%;
+            height: 150px;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background-color: #F8EDE3;
+            resize: none;
+        }
+
         .my-bg-color {
             background-color: #DFD3C3;
         }
@@ -237,28 +253,36 @@
 
     <script>
         // Used to toggle the menu on small screens when clicking on the menu button
-        function myFunction() {
+        function myFunction()
+        {
             var x = document.getElementById("navDemo");
-            if (x.className.indexOf("w3-show") == -1) {
+            if (x.className.indexOf("w3-show") == -1)
+            {
                 x.className += " w3-show";
-            } else {
+            } else
+            {
                 x.className = x.className.replace(" w3-show", "");
             }
         }
 
-        document.addEventListener('invalid', (function () {
-            return function (e) {
+        document.addEventListener('invalid', (function ()
+        {
+            return function (e)
+            {
                 e.preventDefault();
                 document.getElementById("customFile").focus();
             };
         })(), true);
     </script>
     <script>
-        function accordion(id) {
+        function accordion(id)
+        {
             var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1) {
+            if (x.className.indexOf("w3-show") == -1)
+            {
                 x.className += " w3-show";
-            } else {
+            } else
+            {
                 x.className = x.className.replace(" w3-show", "");
             }
         }
