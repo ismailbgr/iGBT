@@ -8,3 +8,4 @@ redis==5.0.1
 uvicorn==0.24.0.post1
 Pillow
 PyYAML
+yt-dlp

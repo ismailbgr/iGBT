@@ -190,3 +190,53 @@ def get_input_text(task_id):
     input_text = pd.read_sql_query(query, con=engine)
     print(input_text)
     return input_text
+
+
+def get_task_graph(taskid):
+    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
+    print(query, flush=True)
+    tasks = pd.read_sql_query(query, con=engine)
+    print(tasks, flush=True)
+    return tasks
+
+
+def remove_text_from_db(task_id):
+    # then remove from UserTask
+    query = f"delete from \"UserTask\" where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+    # then remove from Task
+    query = f"delete from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+
+
+def remove_video_from_db(task_id):
+    # then remove from TaskGraph
+    query = f"delete from \"TaskGraph\" where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+    # then remove from UserTask
+    query = f"delete from \"UserTask\" where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+    # then remove from Task
+    query = f"delete from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+
+
+def get_task_attribute(task_id, attribute):
+    query = f"select {attribute} from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    result = pd.read_sql_query(query, con=engine)
+    print(result)
+    return result
+
+
+def get_task_graph(taskid):
+    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
+    print(query, flush=True)
+    tasks = pd.read_sql_query(query, con=engine)
+    print(tasks, flush=True)
+    return tasks

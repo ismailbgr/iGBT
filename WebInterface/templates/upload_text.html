@@ -1,32 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
-
-<!-- Second Grid -->
+<!-- TODO: WebInterface: Mini navbar is not working properly at task result page -->
+<!-- add remove button to right corner -->
+<div class="w3-display-container w3-right">
+  <button onclick="window.location.href='/remove_text/{{ task_id }}'"
+    class="w3-button w3-display-topright w3-red">Delete</button>
+</div>
 <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container">
   <div class="w3-content">
 
     <div class="w3-center">
 
       <h1>Summarize Text</h1>
-
-
-      <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align">
+      <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Input Text</button>
-
-      <div id="Input" class="w3-container w3-hide">
-        <p>{{ input_text }}</p>
+      <div id="Input" class="w3-container w3-hide akordiyon-cikti">
+        <!-- create a form and put the input text in it. It must be editable. and there must be a retry button -->
+        <form method="POST" action="/retry/{{ task_id }}">
+          <div class="w3-container">
+            <label for="input_text"></label>
+            <textarea class="w3review" name="input_text" rows="4" cols="50">{{ input_text }}</textarea>
+          </div>
+          <button type="submit" class="w3-button  submit-button w3-padding-large w3-large w3-margin-top">Retry</button>
+        </form>
       </div>
 
-      <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align">
+      <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align akordiyon-buton ">
         Summarized Text</button>
-
-      <div id="Output" class="w3-container w3-hide">
+      <div id="Output" class="w3-container w3-hide akordiyon-cikti w3-show">
         <div id="task_id" hx-get="/check_text_status/{{ task_id }}" hx-swap="innerHTML" hx-trigger="every 1s">
-          <p>Task ID: <span hx-swap="innerHTML">Loading...</span></p>
+          <p><span hx-swap="innerHTML">Loading...</span></p>
         </div>
       </div>
 
-
+      <button onclick="accordion('Information')" class="w3-button w3-block w3-left-align akordiyon-buton">
+        Information</button>
+      <div id="Information" class="w3-container w3-hide akordiyon-cikti">
+        <table class="w3-table">
+          <tr>
+            <td>Start Date</td>
+            <td>{{ start_date }}</td>
+          </tr>
+          <tr>
+            <td>Last Edit Date</td>
+            <td>{{ last_edit_date }}</td>
+          </tr>
+        </table>
+      </div>
 
     </div>
   </div>

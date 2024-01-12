@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
-    user: 1000:1000
+    user: 1000:1000 
     hostname: videoparser
     depends_on:
       - rabbitmq
@@ -64,13 +64,13 @@ services:
       - ./config:/app/config
       - ./SharedData/:/data
       - ./config/ollama:/root/.ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
+      # deploy:
+      #   resources:
+      #     reservations:
+      # devices:
+      #   - driver: nvidia
+      #     count: 1
+      #     capabilities: [ gpu ]
   llm:
     build:
       context: LLM
@@ -95,13 +95,14 @@ services:
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
+
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [ gpu ]
 
   taskchecker:
     build:
@@ -131,12 +132,14 @@ services:
       context: WebInterface
       dockerfile: Dockerfile
     hostname: webinterface
+    user: 1000:1000
     ports:
       - 5000:5000
     depends_on:
       - postgres
       - rabbitmq
       - taskchecker
+
     # develop:
     #   watch:
     #     - action: sync

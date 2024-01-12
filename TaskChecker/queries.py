@@ -46,3 +46,11 @@ def change_input_text(task_id, input_text):
     )
     print(query)
     engine.execute(text(query))
+
+
+def get_task_attribute(task_id, attribute):
+    query = f"select {attribute} from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    result = pd.read_sql_query(query, con=engine)
+    print(result)
+    return result
