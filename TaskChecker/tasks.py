@@ -52,7 +52,7 @@ def check_task(task_id, user_id):
             change_task_edit_date(task_id)
         time.sleep(10)
 
-    is_video = get_task_attribute(task_id, "type") == "video"
+    is_video = get_task_attribute(task_id, "type").iloc[0]["type"] == "video"
 
     speech_texter_result = None
     if is_video:

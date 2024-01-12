@@ -511,6 +511,7 @@ def retry(task_id):
     print(new_text)
     # send task to
     remove_text_from_db(task_id)
+
     old_task = celery.AsyncResult(task_id)
     old_task.forget()
 
@@ -526,6 +527,42 @@ def retry(task_id):
     celery.send_task("check_task", args=[task_id, current_user.id], queue="taskchecker")
 
     return redirect("/text/" + task_id)
+
+
+@flask_app.route("/retry_video/<task_id>", methods=["GET", "POST"])
+@login_required
+def retry_video(task_id):
+    new_text = request.form["input_text"]
+    print(new_text)
+
+    old_task = celery.AsyncResult(task_id)
+    old_task.forget()
+
+    title = get_task_attribute(task_id, "task_name").iloc[0]["task_name"]
+    thumbnail = get_task_attribute(task_id, "thumbnail").iloc[0]["thumbnail"]
+
+    task_graph = get_task_graph(task_id)
+
+    remove_video_from_db(task_id)
+    # TODO: WebInterface: Previous text affects new text
+    # assignees: ismailgbr
+    # labels: bug
+
+    # TODO: WebInterface: Input text is not updated on retry
+    # assignees: gklpcsgn, ismailbgr
+    # labels: bug
+    llm_id = task_graph["llm"][0]
+    speech_texter_id = task_graph["speech_texter"][0]
+    video_parser_id = task_graph["video_parser"][0]
+
+    add_task_with_thumbnail(task_id, thumbnail, title, "video", new_text)
+    add_entry_to_usertask(task_id, current_user.id)
+    add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
+
+    celery.send_task("summarize", args=[new_text], queue="llm", task_id=task_id)
+
+    celery.send_task("check_task", args=[task_id, current_user.id], queue="taskchecker")
+    return redirect("/video/" + task_id)
 
 
 @flask_app.route("/remove_text/<task_id>", methods=["GET", "POST"])

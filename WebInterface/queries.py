@@ -226,6 +226,17 @@ def remove_video_from_db(task_id):
     engine.execute(text(query))
 
 
-def retry_text(task_id):
-    # update input_text
-    pass
+def get_task_attribute(task_id, attribute):
+    query = f"select {attribute} from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    result = pd.read_sql_query(query, con=engine)
+    print(result)
+    return result
+
+
+def get_task_graph(taskid):
+    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
+    print(query, flush=True)
+    tasks = pd.read_sql_query(query, con=engine)
+    print(tasks, flush=True)
+    return tasks
