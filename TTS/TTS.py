@@ -2,7 +2,6 @@ import pyttsx3
 from gtts import gTTS
 import sys
 
-
 class TTS:
     def __init__(self, model):
         self.model = model
