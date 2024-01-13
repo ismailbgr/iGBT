@@ -172,3 +172,15 @@ services:
     hostname: adminer
     depends_on:
       - postgres
+
+  tts:
+    build:
+      context: TTS
+      dockerfile: Dockerfile
+    user: 1000:1000
+    hostname: tts
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./config:/app/config
+      - ./SharedData/:/data
