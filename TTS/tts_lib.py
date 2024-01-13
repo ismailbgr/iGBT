@@ -13,7 +13,7 @@ class iGBTTS:
             filename = output_filename
             file.save(filename)
         elif self.model == "TTS":
-            # TODO: add TTS code here
+            # TODO: add TTS library code here
             pass
         elif self.model == "PYTTSX3":
             """
@@ -28,6 +28,7 @@ class iGBTTS:
             volume = engine.getProperty('volume')   #getting to know current volume level (min=0 and max=1)
             print (volume)                          #printing current volume level
             engine.setProperty('volume',1.0)
+
             """
             engine = pyttsx3.init()
             engine.save_to_file(text, output_filename)
