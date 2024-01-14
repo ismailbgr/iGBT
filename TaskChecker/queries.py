@@ -54,3 +54,15 @@ def get_task_attribute(task_id, attribute):
     result = pd.read_sql_query(query, con=engine)
     print(result)
     return result
+
+
+def set_task_attribute(task_id, attribute, value):
+    query = f"update \"Task\" set {attribute} = '{value}' where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
+
+
+def set_finished(task_id):
+    query = f"update \"Task\" set is_finished = true where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))

@@ -49,7 +49,7 @@ def check_task(task_id, user_id):
             cur_task_state = task.state
             change_task_state(task_id, cur_task_state)
             change_task_edit_date(task_id)
-        time.sleep(10)
+        time.sleep(1)
 
     is_video = get_task_attribute(task_id, "type").iloc[0]["type"] == "video"
 
@@ -74,6 +74,7 @@ def check_task(task_id, user_id):
     task_result = str(task_result).replace("'", "&#39;").replace('"', "&#34;")
     change_task_state(task_id, task_result)
     change_task_edit_date(task_id)
-    if speech_texter_result is not None:
+    if speech_texter_result is not None and not get_task_attribute(task_id, "is_finished").iloc[0]["is_finished"]:
         change_input_text(task_id, speech_texter_result)
+    set_finished(task_id)
     return task_result
