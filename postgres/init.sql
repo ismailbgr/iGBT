@@ -7,6 +7,7 @@ CREATE TABLE "public"."Task" (
     "task_last_edit_date" timestamp,
     "type" text NOT NULL,
     "input_text" text,
+    "is_finished" boolean,
     CONSTRAINT "Task_task_id" PRIMARY KEY ("task_id")
 ) WITH (oids = false);
 

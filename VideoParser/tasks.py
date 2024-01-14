@@ -86,6 +86,9 @@ def youtube_dl(self, url):
     uuidname = str(uuid.uuid4())
     output_file = f"/data/{uuidname}.mp4"
 
+    # TODO: VideoParser: youtube_dl: only download audio as mp3
+    # assignees: ismailgbr
+    # labels: bug
     def download_progress_hook(d):
         if d["status"] == "finished":
             print("Done downloading")

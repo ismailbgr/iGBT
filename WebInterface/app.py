@@ -343,31 +343,6 @@ def upload_video():
     return render_template("upload_video.html")
 
 
-@flask_app.route("/video/<task_id>", methods=["GET"])
-@login_required
-def upload_video_result(task_id):
-    if check_if_user_has_task(current_user.id, task_id):
-        # TODO: create an endpoint to check the status of the task
-        task = get_task_by_id(task_id)
-        input_text = task.iloc[0]["input_text"]
-        start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
-        last_edit_date = (
-            task.iloc[0]["task_last_edit_date"].strftime("%d/%m/%Y %H:%M:%S")
-            if task.iloc[0]["task_last_edit_date"] is not None
-            else None
-        )
-        return render_template(
-            "upload_video.html",
-            task_id=task_id,
-            input_text=input_text,
-            start_date=start_date,
-            last_edit_date=last_edit_date,
-        )
-    else:
-        flash("You do not have permission to view this task.", category="error")
-        return redirect("/")
-
-
 @flask_app.route("/upload_text", methods=["GET", "POST"])
 @login_required
 def upload_text():
@@ -427,6 +402,7 @@ def upload_youtube():
         llm_id = res.id
         speech_texter_id = res.parent.id
         video_parser_id = res.parent.parent.id
+        title = str(title).replace("'", "&#39;").replace('"', "&#34;")
 
         add_task_with_thumbnail(task_id, thumbnail, title, "video", "PARSING VIDEO")
         add_entry_to_usertask(task_id, current_user.id)
@@ -438,6 +414,31 @@ def upload_youtube():
         # return render_template("upload_text.html", task_id=task_id)
         return redirect(url_for("upload_video_result", task_id=task_id))
     return render_template("upload_video.html")
+
+
+@flask_app.route("/video/<task_id>", methods=["GET"])
+@login_required
+def upload_video_result(task_id):
+    if check_if_user_has_task(current_user.id, task_id):
+        # TODO: create an endpoint to check the status of the task
+        task = get_task_by_id(task_id)
+        input_text = task.iloc[0]["input_text"]
+        start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
+        last_edit_date = (
+            task.iloc[0]["task_last_edit_date"].strftime("%d/%m/%Y %H:%M:%S")
+            if task.iloc[0]["task_last_edit_date"] is not None
+            else None
+        )
+        return render_template(
+            "upload_video.html",
+            task_id=task_id,
+            input_text=input_text,
+            start_date=start_date,
+            last_edit_date=last_edit_date,
+        )
+    else:
+        flash("You do not have permission to view this task.", category="error")
+        return redirect("/")
 
 
 @flask_app.route("/text/<task_id>", methods=["GET", "POST"])
@@ -488,6 +489,13 @@ def check_video_text_status(task_id):
     task_graph = get_task_graph(task_id)
     speech_texter_id = task_graph["speech_texter"][0]
     task = celery.AsyncResult(speech_texter_id)
+
+    if (
+        check_if_user_has_task(current_user.id, task_id)
+        and get_task_attribute(task_id, "is_finished").iloc[0]["is_finished"]
+    ):
+        return get_task_attribute(task_id, "input_text").iloc[0]["input_text"], 286
+
     print(task.state)
     if task.state == "PENDING" and check_if_user_has_task(
         current_user.id, speech_texter_id
@@ -503,9 +511,32 @@ def check_video_text_status(task_id):
     return task.state
 
 
+@flask_app.route("/check_video_status/<task_id>")
+@login_required
+def check_video_status(task_id):
+    task = celery.AsyncResult(task_id)
+
+    if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
+        result = get_task_by_id(task_id).iloc[0]["result"]
+        print("RESULT: ", result, flush=True)
+        if result != "0":
+            return result, 286
+
+    print(task.state)
+    if task.state == "SUCCESS":
+        return task.get(), 286
+    elif task.state == "FAILURE":
+        return "", 286
+    return task.state
+
+
 @flask_app.route("/retry/<task_id>", methods=["GET", "POST"])
 @login_required
 def retry(task_id):
+    # if task is not finished, return
+    if not get_task_attribute(task_id, "is_finished").iloc[0]["is_finished"]:
+        flash("You can only retry finished tasks.", category="error")
+        return redirect("/text/" + task_id)
     # print form
     new_text = request.form["input_text"]
     print(new_text)
@@ -532,6 +563,10 @@ def retry(task_id):
 @flask_app.route("/retry_video/<task_id>", methods=["GET", "POST"])
 @login_required
 def retry_video(task_id):
+    # if task is not finished, return
+    if not get_task_attribute(task_id, "is_finished").iloc[0]["is_finished"]:
+        flash("You can only retry finished tasks.", category="error")
+        return redirect("/video/" + task_id)
     new_text = request.form["input_text"]
     print(new_text)
 
@@ -548,9 +583,6 @@ def retry_video(task_id):
     # assignees: ismailgbr
     # labels: bug
 
-    # TODO: WebInterface: Input text is not updated on retry
-    # assignees: gklpcsgn, ismailbgr
-    # labels: bug
     llm_id = task_graph["llm"][0]
     speech_texter_id = task_graph["speech_texter"][0]
     video_parser_id = task_graph["video_parser"][0]
@@ -558,6 +590,7 @@ def retry_video(task_id):
     add_task_with_thumbnail(task_id, thumbnail, title, "video", new_text)
     add_entry_to_usertask(task_id, current_user.id)
     add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
+    set_finished(task_id)
 
     celery.send_task("summarize", args=[new_text], queue="llm", task_id=task_id)
 
@@ -569,7 +602,6 @@ def retry_video(task_id):
 @login_required
 def remove_task(task_id):
     print(task_id)
-    # TODO: Terminate celery text task on task delete
     # revoke task
     celery.AsyncResult(task_id).revoke(terminate=True)
     remove_text_from_db(task_id)
@@ -581,30 +613,10 @@ def remove_task(task_id):
 @login_required
 def remove_video(task_id):
     print(task_id)
-    # TODO: Terminate celery video task on task delete
     celery.AsyncResult(task_id).revoke(terminate=True)
     remove_video_from_db(task_id)
     flash("Task removed.", category="success")
     return redirect("/profile/tasks")
-
-
-@flask_app.route("/check_video_status/<task_id>")
-@login_required
-def check_video_status(task_id):
-    task = celery.AsyncResult(task_id)
-
-    if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
-        result = get_task_by_id(task_id).iloc[0]["result"]
-        print("RESULT: ", result, flush=True)
-        if result != "0":
-            return result, 286
-
-    print(task.state)
-    if task.state == "SUCCESS":
-        return task.get(), 286
-    elif task.state == "FAILURE":
-        return "", 286
-    return task.state
 
 
 if __name__ == "app" or __name__ == "__main__":

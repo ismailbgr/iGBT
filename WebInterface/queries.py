@@ -106,7 +106,7 @@ def get_tasks_of_user_by_id(userid):
     # User: user_id, ad, soyad, email, telefon, saltedpassword, is_admin
     # UserTask: task_id, user_id
     query = (
-        'select "Task".task_id, "Task".result, "Task".task_start_date, "Task".task_last_edit_date, "Task".type, "Task".task_name,"Task".thumbnail from "Task" inner join "UserTask" on "Task".task_id = "UserTask".task_id where "UserTask".user_id = '
+        'select "Task".task_id, "Task".result, "Task".task_start_date, "Task".task_last_edit_date, "Task".type, "Task".task_name,"Task".thumbnail, "Task".is_finished from "Task" inner join "UserTask" on "Task".task_id = "UserTask".task_id where "UserTask".user_id = '
         + str(userid)
     )
     print(query, flush=True)
@@ -119,6 +119,7 @@ def get_tasks_of_user_by_id(userid):
     tasks["type"] = tasks["type"].astype(str)
     tasks["task_name"] = tasks["task_name"].astype(str)
     tasks["thumbnail"] = tasks["thumbnail"].astype(str)
+    tasks["is_finished"] = tasks["is_finished"].astype(bool)
 
     return tasks
 
@@ -152,7 +153,7 @@ def check_if_user_has_task(userid, taskid):
 def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
     current_date = pd.Timestamp.now()
 
-    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}');"
+    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
     print(query, flush=True)
     engine.execute(text(query))
 
@@ -240,3 +241,9 @@ def get_task_graph(taskid):
     tasks = pd.read_sql_query(query, con=engine)
     print(tasks, flush=True)
     return tasks
+
+
+def set_finished(task_id):
+    query = f"update \"Task\" set is_finished = '{True}' where task_id = '{task_id}';"
+    print(query)
+    engine.execute(text(query))
