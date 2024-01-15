@@ -20,7 +20,7 @@ app.conf.task_routes = (
     ],
 )
 
-res = app.send_task("tts", args=["PYTTSX3", input_text, "en", "output"])
+res = app.send_task("tts", args=["TTS", input_text, "en", "output"])
 
 while not res.ready():
     print("waiting...")

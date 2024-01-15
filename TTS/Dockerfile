@@ -7,7 +7,7 @@ RUN groupadd appuser -g 1000
 RUN useradd appuser -g appuser -u 1000
 
 RUN apt update
-RUN apt install -y ffmpeg flac 
+RUN apt install -y ffmpeg flac
 
 RUN apt-get install espeak -y
 

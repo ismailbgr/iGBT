@@ -1,20 +1,25 @@
 import pyttsx3
 from gtts import gTTS
 import sys
+import torch
+from TTS.api import TTS
 
 
 class iGBTTS:
     def __init__(self, model):
         self.model = model
 
-    def tts(self, text, lang="en", output_filename="voice.mp3"):
+    def tts(self, text, lang="en", output_filename="output.wav"):
         if self.model == "gTTS":
             file = gTTS(text=text, lang=lang)
             filename = output_filename
             file.save(filename)
         elif self.model == "TTS":
-            # TODO: add TTS library code here
-            pass
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            tts = TTS(
+                model_name="tts_models/de/thorsten/tacotron2-DDC", progress_bar=False
+            ).to(device)
+            tts.tts_to_file(text=text, language=lang, file_path=output_filename)
         elif self.model == "PYTTSX3":
             """
             TODO: control the voice speed and volume
@@ -37,3 +42,7 @@ class iGBTTS:
         else:
             print("no valid model name ")
             sys.exit(1)
+
+    def tts_self_voice():
+        # TODO: write the self voice method
+        raise NotImplementedError()
