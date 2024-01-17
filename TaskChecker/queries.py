@@ -1,8 +1,27 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 import pandas as pd
+import yaml
+import builtins
 
 global engine
+
+# Load config
+config = None
+with open("/app/config/config.yml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
+if config is None:
+    raise Exception("Config file not found")
+
+print("config: ", config)
+
+
+def print(*args, **kwargs):
+    if config["verbose"]:
+        return builtins.print(*args, flush=True, **kwargs)
+    else:
+        return
 
 
 def init_db():
@@ -13,9 +32,9 @@ def init_db():
 
 def get_task_graph(taskid):
     query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
-    print(query, flush=True)
+    print(query)
     tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
+    print(tasks)
     return tasks
 
 

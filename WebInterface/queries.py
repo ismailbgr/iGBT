@@ -2,8 +2,27 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 import hashlib
 import pandas as pd
+import yaml
+import builtins
 
 global engine
+
+# Load config
+config = None
+with open("/app/config/config.yml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
+if config is None:
+    raise Exception("Config file not found")
+
+print("config: ", config)
+
+
+def print(*args, **kwargs):
+    if config["verbose"]:
+        return builtins.print(*args, flush=True, **kwargs)
+    else:
+        return
 
 ################################################################
 #################### INITIALIZATION ############################

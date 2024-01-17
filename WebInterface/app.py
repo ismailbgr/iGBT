@@ -8,7 +8,7 @@ from flask_login import (
     current_user,
     UserMixin,
 )
-
+from queries import *
 from celery import Celery, signature
 
 import pandas as pd
@@ -16,7 +16,7 @@ import json
 import yaml
 import uuid
 import yt_dlp
-
+import builtins
 
 ############################################################################################################
 ######################################### INITIALIZE APPS ##################################################
@@ -38,8 +38,15 @@ if config is None:
 
 print("config: ", config)
 
-# Create the Celery app
 
+def print(*args, **kwargs):
+    if config["verbose"]:
+        return builtins.print(*args, flush=True, **kwargs)
+    else:
+        return
+
+
+# Create the Celery app
 celery = Celery(
     "llm", broker=config["celery"]["broker"], backend=config["celery"]["backend"]
 )
@@ -60,11 +67,7 @@ celery.conf.task_routes = (
 ######################################### DATABASE##########################################################
 ############################################################################################################
 
-import queries
-from queries import *
-
-queries.init_db()
-
+init_db()
 
 ############################################################################################################
 ######################################### LOGIN ############################################################
@@ -190,15 +193,10 @@ def profile_tasks():
         ]
     ]
     results = results.sort_values(by="task_start_date", ascending=False)
-
     results = results.rename(columns={"task_name": "name", "thumbnail": "url"})
-    # print(results.columns, flush=True)
-    # print("RESULTS: ", results, flush=True)
     results = results.rename(columns={"task_name": "name", "thumbnail": "url"})
-    # print(results.columns, flush=True)
-    # print("RESULTS: ", results, flush=True)
     results = json.loads(results.to_json(orient="records"))
-    # print("SHAPE: ", len(results), flush=True)
+
     for i in range(len(results)):
         if len(results[i]["name"]) > 20:
             results[i]["name"] = results[i]["name"][:17] + "..."
@@ -467,7 +465,7 @@ def check_text_status(task_id):
 
     if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
         result = get_task_by_id(task_id).iloc[0]["result"]
-        print("RESULT: ", result, flush=True)
+        print("RESULT: ", result)
         if result != "0":
             return result, 286
 
@@ -477,8 +475,6 @@ def check_text_status(task_id):
     return task.state
 
 
-
-
 @flask_app.route("/check_video_status/<task_id>")
 @login_required
 def check_video_status(task_id):
@@ -486,7 +482,7 @@ def check_video_status(task_id):
 
     if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
         result = get_task_by_id(task_id).iloc[0]["result"]
-        print("RESULT: ", result, flush=True)
+        print("RESULT: ", result)
         if result != "0":
             return result, 286
 
@@ -496,6 +492,7 @@ def check_video_status(task_id):
     elif task.state == "FAILURE":
         return "", 286
     return task.state
+
 
 @flask_app.route("/check_video_text_status/<task_id>")
 @login_required
@@ -515,7 +512,7 @@ def check_video_text_status(task_id):
         current_user.id, speech_texter_id
     ):
         result = get_task_by_id(speech_texter_id).iloc[0]["result"]
-        print("RESULT: ", result, flush=True)
+        print("RESULT: ", result)
         if result != "0":
             return result, 286
 
@@ -523,6 +520,7 @@ def check_video_text_status(task_id):
     if task.state == "SUCCESS" or task.state == "FAILURE":
         return task.get(), 286
     return task.state
+
 
 @flask_app.route("/retry_text/<task_id>", methods=["GET", "POST"])
 @login_required

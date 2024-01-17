@@ -4,3 +4,4 @@ celery:
 speechtexter:
   model_name: whisper
   model_size: base
+verbose: False
