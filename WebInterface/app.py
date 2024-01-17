@@ -135,7 +135,8 @@ def unauthorized_callback():
 # create a route for home page
 @flask_app.route("/")
 def home():
-    return render_template("index.html")
+    available_llms = ["ChatGPT", "Bard", "Ollama"]
+    return render_template("index.html", llms=available_llms)
 
 
 # create a route for about us page
@@ -303,7 +304,9 @@ def signin():
 @login_required
 def upload_video():
     if request.method == "POST":
-        # Check if the post request has the file part
+        llm = request.form["llm"]
+        print(llm)
+
         if "file" not in request.files:
             return redirect(request.url)
         file = request.files["file"]

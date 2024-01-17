@@ -119,6 +119,13 @@
                 </div>
               </div>
             </div>
+            <div style="margin-top: 0.5rem;">
+              <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+                {% for llm in llms %}
+                <option value="{{ llm }}">{{ llm }}</option>
+                {% endfor %}
+              </select>
+            </div>
             <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
               onclick="showLoading()" disabled>Summarize</button>
             <div id="loading-overlay"></div>
@@ -149,6 +156,13 @@
             <h5>Please upload the text that you want to summarize:</h5>
             <label for="text"></label>
             <textarea class="w3review" name="w3review" rows="4" cols="50"></textarea>
+            <div>
+              <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+                {% for llm in llms %}
+                <option value="{{ llm }}">{{ llm }}</option>
+                {% endfor %}
+              </select>
+            </div>
             <button type="submit"
               class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
@@ -180,6 +194,13 @@
             <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
             <label for="text"></label>
             <textarea class="w3review" type="text" id="youtube_link" name="youtube_link"></textarea>
+            <div>
+              <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+                {% for llm in llms %}
+                <option value="{{ llm }}">{{ llm }}</option>
+                {% endfor %}
+              </select>
+            </div>
             <button type="submit"
               class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
@@ -211,6 +232,13 @@
               </div>
             </div>
           </div>
+          <div style="margin-top: 0.5rem;">
+            <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+              {% for llm in llms %}
+              <option value="{{ llm }}">{{ llm }}</option>
+              {% endfor %}
+            </select>
+          </div>
           <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
             onclick="showLoading()" disabled>Summarize</button>
           <div id="loading-overlay"></div>
@@ -240,6 +268,13 @@
           <h5>Please upload the text that you want to summarize:</h5>
           <label for="text"></label>
           <textarea class="w3review" name="w3review" rows="4" cols="50"></textarea>
+          <div>
+            <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+              {% for llm in llms %}
+              <option value="{{ llm }}">{{ llm }}</option>
+              {% endfor %}
+            </select>
+          </div>
           <button type="submit"
             class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
         </div>
@@ -262,6 +297,13 @@
           <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
           <label for="text"></label>
           <textarea class="w3review" type="text" id="youtube_link" name="youtube_link"></textarea>
+          <div>
+            <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+              {% for llm in llms %}
+              <option value="{{ llm }}">{{ llm }}</option>
+              {% endfor %}
+            </select>
+          </div>
           <button type="submit"
             class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
         </div>
