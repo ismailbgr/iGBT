@@ -11,41 +11,12 @@ def init_db():
     print("Connected to database.")
 
 
-def add_entry_to_usertask(task_id, user_id):
-    query = f"insert into \"UserTask\" values('{user_id}', '{task_id}');"
-
-    print(query)
-    engine.execute(text(query))
-
-
-def change_task_state(task_id, state):
-    query = f"update \"Task\" set result = '{state}' where task_id = '{task_id}';"
-
-    print(query)
-    engine.execute(text(query))
-
-
-def change_task_edit_date(task_id):
-    current_date = pd.Timestamp.now()
-    query = f"update \"Task\" set task_last_edit_date = '{current_date}' where task_id = '{task_id}';"
-    print(query)
-    engine.execute(text(query))
-
-
 def get_task_graph(taskid):
     query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
     print(query, flush=True)
     tasks = pd.read_sql_query(query, con=engine)
     print(tasks, flush=True)
     return tasks
-
-
-def change_input_text(task_id, input_text):
-    query = (
-        f"update \"Task\" set input_text = '{input_text}' where task_id = '{task_id}';"
-    )
-    print(query)
-    engine.execute(text(query))
 
 
 def get_task_attribute(task_id, attribute):
@@ -58,11 +29,5 @@ def get_task_attribute(task_id, attribute):
 
 def set_task_attribute(task_id, attribute, value):
     query = f"update \"Task\" set {attribute} = '{value}' where task_id = '{task_id}';"
-    print(query)
-    engine.execute(text(query))
-
-
-def set_finished(task_id):
-    query = f"update \"Task\" set is_finished = true where task_id = '{task_id}';"
     print(query)
     engine.execute(text(query))
