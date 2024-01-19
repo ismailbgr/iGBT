@@ -2,8 +2,31 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 import hashlib
 import pandas as pd
+import yaml
+import builtins
 
 global engine
+
+# Load config
+config = None
+with open("/app/config/config.yml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
+if config is None:
+    raise Exception("Config file not found")
+
+print("config: ", config)
+
+
+def print(*args, **kwargs):
+    if config["verbose"]:
+        return builtins.print(*args, flush=True, **kwargs)
+    else:
+        return
+
+################################################################
+#################### INITIALIZATION ############################
+################################################################
 
 
 def init_db():
@@ -12,57 +35,9 @@ def init_db():
     print("Connected to database.")
 
 
-def encrypt_string(hash_string):
-    global engine
-    sha_signature = hashlib.sha256(hash_string.encode()).hexdigest()
-    return sha_signature
-
-
-def get_data_from_db_userid(userid):
-    global engine
-    query = 'select * from "user" where user_id = ' + str(userid)
-    print(query)
-    user = pd.read_sql_query(query, con=engine)
-    # set userid to string
-    user["user_id"] = user["user_id"].astype(str)
-    test_data = user.to_json(orient="records")
-    return test_data
-
-
-def check_user_from_database(username, password):
-    global engine
-    query = (
-        'select * from "user" where email = \''
-        + username
-        + "' and saltedpassword = '"
-        + password
-        + "'"
-    )
-    print(query)
-    user = pd.read_sql_query(query, con=engine)
-    user["user_id"] = user["user_id"].astype(str)
-    test_data = user.to_json(orient="records")
-    return test_data
-
-
-def update_user(user_id, ad, soyad, telefon):
-    global engine
-    query = f"update \"user\" set ad = '{ad}', soyad = '{soyad}', telefon = '{telefon}'  where user_id = '{user_id}';"
-    print(query)
-    engine.execute(text(query))
-
-
-def check_email_available(email):
-    global engine
-    query = 'select * from "user" where email = \'' + email + "'"
-    print(query)
-    user = pd.read_sql_query(query, con=engine)
-    # if user is empty then email is available
-    print(user.empty)
-    if user.empty:
-        return True
-    else:
-        return False
+################################################################
+#################### ADDING TO DATABASE #######################
+################################################################
 
 
 def add_user_to_db(
@@ -100,11 +75,68 @@ def add_user_to_db(
     engine.execute(text(query))
 
 
+def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
+    current_date = pd.Timestamp.now()
+
+    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
+    print(query, flush=True)
+    engine.execute(text(query))
+
+
+def add_task_without_thumbnail(taskid, file_name, type, input_text):
+    current_date = pd.Timestamp.now()
+
+    query = f"insert into \"Task\" (task_id, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
+    print(query, flush=True)
+    engine.execute(text(query))
+
+
+def add_entry_to_usertask(task_id, user_id):
+    query = f"insert into \"UserTask\" values('{user_id}', '{task_id}');"
+
+    print(query)
+    engine.execute(text(query))
+
+
+def add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id):
+    query = f"insert into \"TaskGraph\" (llm, speech_texter, video_parser, task_id) values('{llm_id}', '{speech_texter_id}', '{video_parser_id}', '{task_id}');"
+    print(query)
+    engine.execute(text(query))
+
+
+################################################################
+#################### GETTING FROM DATABASE #####################
+################################################################
+
+
+def get_data_from_db_userid(userid):
+    global engine
+    query = 'select * from "user" where user_id = ' + str(userid)
+    print(query)
+    user = pd.read_sql_query(query, con=engine)
+    # set userid to string
+    user["user_id"] = user["user_id"].astype(str)
+    test_data = user.to_json(orient="records")
+    return test_data
+
+
+def get_user_from_database_by_username(username, password):
+    global engine
+    query = (
+        'select * from "user" where email = \''
+        + username
+        + "' and saltedpassword = '"
+        + password
+        + "'"
+    )
+    print(query)
+    user = pd.read_sql_query(query, con=engine)
+    user["user_id"] = user["user_id"].astype(str)
+    test_data = user.to_json(orient="records")
+    return test_data
+
+
 def get_tasks_of_user_by_id(userid):
-    # We have 3 tables: Task, User, UserTask
-    # Task: task_id, thumbnail, result
-    # User: user_id, ad, soyad, email, telefon, saltedpassword, is_admin
-    # UserTask: task_id, user_id
     query = (
         'select "Task".task_id, "Task".result, "Task".task_start_date, "Task".task_last_edit_date, "Task".type, "Task".task_name,"Task".thumbnail, "Task".is_finished from "Task" inner join "UserTask" on "Task".task_id = "UserTask".task_id where "UserTask".user_id = '
         + str(userid)
@@ -125,12 +157,64 @@ def get_tasks_of_user_by_id(userid):
 
 
 def get_task_by_id(taskid):
-    # task_id is string
     query = 'select * from "Task" where task_id = \'' + taskid + "'"
     print(query, flush=True)
     tasks = pd.read_sql_query(query, con=engine)
     print(tasks, flush=True)
     return tasks
+
+
+def get_task_graph(taskid):
+    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
+    print(query, flush=True)
+    tasks = pd.read_sql_query(query, con=engine)
+    print(tasks, flush=True)
+    return tasks
+
+
+def get_task_attribute(task_id, attribute):
+    query = f"select {attribute} from \"Task\" where task_id = '{task_id}';"
+    print(query)
+    result = pd.read_sql_query(query, con=engine)
+    print(result)
+    return result
+
+
+################################################################
+#################### UPDATING DATABASE #########################
+################################################################
+
+
+def update_task_attribute(task_id, attribute, value):
+    query = f"update \"Task\" set {attribute} = '{value}' where task_id = '{task_id}';"
+
+    print(query)
+    engine.execute(text(query))
+
+
+def update_user(user_id, ad, soyad, telefon):
+    global engine
+    query = f"update \"user\" set ad = '{ad}', soyad = '{soyad}', telefon = '{telefon}'  where user_id = '{user_id}';"
+    print(query)
+    engine.execute(text(query))
+
+
+################################################################
+#################### CHECKING DATABASE #########################
+################################################################
+
+
+def check_email_available(email):
+    global engine
+    query = 'select * from "user" where email = \'' + email + "'"
+    print(query)
+    user = pd.read_sql_query(query, con=engine)
+    # if user is empty then email is available
+    print(user.empty)
+    if user.empty:
+        return True
+    else:
+        return False
 
 
 def check_if_user_has_task(userid, taskid):
@@ -150,55 +234,9 @@ def check_if_user_has_task(userid, taskid):
         return True
 
 
-def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
-    current_date = pd.Timestamp.now()
-
-    query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
-    print(query, flush=True)
-    engine.execute(text(query))
-
-
-def add_entry_to_usertask(task_id, user_id):
-    query = f"insert into \"UserTask\" values('{user_id}', '{task_id}');"
-
-    print(query)
-    engine.execute(text(query))
-
-
-def change_task_state(task_id, state):
-    query = f"update \"Task\" set result = '{state}' where task_id = '{task_id}';"
-
-    print(query)
-    engine.execute(text(query))
-
-
-def change_task_edit_date(task_id):
-    current_date = pd.Timestamp.now()
-    query = f"update \"Task\" set task_last_edit_date = '{current_date}' where task_id = '{task_id}';"
-    print(query)
-    engine.execute(text(query))
-
-
-def add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id):
-    query = f"insert into \"TaskGraph\" (llm, speech_texter, video_parser, task_id) values('{llm_id}', '{speech_texter_id}', '{video_parser_id}', '{task_id}');"
-    print(query)
-    engine.execute(text(query))
-
-
-def get_input_text(task_id):
-    query = f"select input_text from \"Task\" where task_id = '{task_id}';"
-    print(query)
-    input_text = pd.read_sql_query(query, con=engine)
-    print(input_text)
-    return input_text
-
-
-def get_task_graph(taskid):
-    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
-    print(query, flush=True)
-    tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
-    return tasks
+################################################################
+#################### REMOVING FROM DATABASE ####################
+################################################################
 
 
 def remove_text_from_db(task_id):
@@ -227,23 +265,12 @@ def remove_video_from_db(task_id):
     engine.execute(text(query))
 
 
-def get_task_attribute(task_id, attribute):
-    query = f"select {attribute} from \"Task\" where task_id = '{task_id}';"
-    print(query)
-    result = pd.read_sql_query(query, con=engine)
-    print(result)
-    return result
+################################################################
+#################### OTHERS ####################################
+################################################################
 
 
-def get_task_graph(taskid):
-    query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
-    print(query, flush=True)
-    tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
-    return tasks
-
-
-def set_finished(task_id):
-    query = f"update \"Task\" set is_finished = '{True}' where task_id = '{task_id}';"
-    print(query)
-    engine.execute(text(query))
+def encrypt_string(hash_string):
+    global engine
+    sha_signature = hashlib.sha256(hash_string.encode()).hexdigest()
+    return sha_signature
