@@ -1,4 +1,4 @@
-FROM bitnami/pytorch
+FROM bitnami/pytorch:2.1.0
 
 USER root
 
@@ -23,8 +23,6 @@ WORKDIR /app
 
 # chown
 RUN chown -R appuser:appuser /app
-
-USER appuser
 
 # run the celery worker
 CMD celery -A tasks worker --loglevel=info -Q tts

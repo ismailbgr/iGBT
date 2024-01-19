@@ -16,10 +16,13 @@ class iGBTTS:
             file.save(filename)
         elif self.model == "TTS":
             device = "cuda" if torch.cuda.is_available() else "cpu"
+            print("tts_models/de/thorsten/tacotron2-DDC")
             tts = TTS(
-                model_name="tts_models/de/thorsten/tacotron2-DDC", progress_bar=False
+                model_name="tts_models/en/ljspeech/tacotron2-DDC",
+                progress_bar=False,
             ).to(device)
-            tts.tts_to_file(text=text, language=lang, file_path=output_filename)
+            print(output_filename)
+            tts.tts_to_file(text=text, file_path=output_filename)
         elif self.model == "PYTTSX3":
             """
             TODO: control the voice speed and volume
