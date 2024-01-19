@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
-    user: 1000:1000 
+    user: 1000:1000
     hostname: videoparser
     depends_on:
       - rabbitmq
@@ -95,7 +95,6 @@ services:
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
-
     # deploy:
     #   resources:
     #     reservations:
@@ -172,3 +171,14 @@ services:
     hostname: adminer
     depends_on:
       - postgres
+
+  tts:
+    build:
+      context: TTS
+      dockerfile: Dockerfile
+    hostname: tts
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./config:/app/config
+      - ./SharedData/:/data
