@@ -21,7 +21,11 @@ def print(*args, **kwargs):
     if config["verbose"]:
         return builtins.print(*args, flush=True, **kwargs)
     else:
-        return
+        if "force" in kwargs:
+            if kwargs["force"]:
+                return builtins.print(*args, flush=True, **kwargs)
+        else:
+            return
 
 
 ############################################################################################################

@@ -22,7 +22,12 @@ def print(*args, **kwargs):
     if config["verbose"]:
         return builtins.print(*args, flush=True, **kwargs)
     else:
-        return
+        if "force" in kwargs:
+            if kwargs["force"]:
+                return builtins.print(*args, flush=True, **kwargs)
+        else:
+            return
+
 
 ################################################################
 #################### INITIALIZATION ############################
@@ -79,7 +84,7 @@ def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
     current_date = pd.Timestamp.now()
 
     query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
-    print(query, flush=True)
+    print(query)
     engine.execute(text(query))
 
 
@@ -87,7 +92,7 @@ def add_task_without_thumbnail(taskid, file_name, type, input_text):
     current_date = pd.Timestamp.now()
 
     query = f"insert into \"Task\" (task_id, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
-    print(query, flush=True)
+    print(query)
     engine.execute(text(query))
 
 
@@ -141,9 +146,9 @@ def get_tasks_of_user_by_id(userid):
         'select "Task".task_id, "Task".result, "Task".task_start_date, "Task".task_last_edit_date, "Task".type, "Task".task_name,"Task".thumbnail, "Task".is_finished from "Task" inner join "UserTask" on "Task".task_id = "UserTask".task_id where "UserTask".user_id = '
         + str(userid)
     )
-    print(query, flush=True)
+    print(query)
     tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
+    print(tasks)
     tasks["task_id"] = tasks["task_id"].astype(str)
     tasks["result"] = tasks["result"].astype(str)
     tasks["task_start_date"] = tasks["task_start_date"].astype(str)
@@ -158,17 +163,17 @@ def get_tasks_of_user_by_id(userid):
 
 def get_task_by_id(taskid):
     query = 'select * from "Task" where task_id = \'' + taskid + "'"
-    print(query, flush=True)
+    print(query)
     tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
+    print(tasks)
     return tasks
 
 
 def get_task_graph(taskid):
     query = 'select * from "TaskGraph" where task_id = \'' + taskid + "'"
-    print(query, flush=True)
+    print(query)
     tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
+    print(tasks)
     return tasks
 
 
@@ -225,9 +230,9 @@ def check_if_user_has_task(userid, taskid):
         + taskid
         + "'"
     )
-    print(query, flush=True)
+    print(query)
     tasks = pd.read_sql_query(query, con=engine)
-    print(tasks, flush=True)
+    print(tasks)
     if tasks.empty:
         return False
     else:

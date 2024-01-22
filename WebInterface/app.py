@@ -1,4 +1,5 @@
 from io import StringIO
+import time
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import (
     LoginManager,
@@ -43,7 +44,11 @@ def print(*args, **kwargs):
     if config["verbose"]:
         return builtins.print(*args, flush=True, **kwargs)
     else:
-        return
+        if "force" in kwargs:
+            if kwargs["force"]:
+                return builtins.print(*args, flush=True, **kwargs)
+        else:
+            return
 
 
 # Create the Celery app
@@ -130,11 +135,28 @@ def unauthorized_callback():
     return redirect("/signin")
 
 
+@flask_app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
+############################################################################################################
+############################################ HOME ###########################################################
+############################################################################################################
+
+
 # create a route for home page
 @flask_app.route("/")
 def home():
     available_llms = ["ChatGPT", "Bard", "Ollama"]
     return render_template("index.html", llms=available_llms)
+
+
+############################################################################################################
+############################################ ABOUT US #######################################################
+############################################################################################################
 
 
 # create a route for about us page
@@ -143,11 +165,9 @@ def about():
     return render_template("about_us.html")
 
 
-@flask_app.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return redirect("/")
+############################################################################################################
+############################################ PROFILE ########################################################
+############################################################################################################
 
 
 @flask_app.route("/profile")
@@ -201,6 +221,11 @@ def profile_tasks():
         if len(results[i]["name"]) > 20:
             results[i]["name"] = results[i]["name"][:17] + "..."
     return render_template("profile_tasks.html", tasks=results)
+
+
+############################################################################################################
+############################################ SIGNUP - SIGNIN ###############################################
+############################################################################################################
 
 
 @flask_app.route("/signup", methods=["GET", "POST"])
@@ -291,6 +316,11 @@ def signin():
         return redirect(url_for("home"))
 
     return render_template("signin.html")
+
+
+############################################################################################################
+############################################ UPLOAD ENDPOINTS ##############################################
+############################################################################################################
 
 
 @flask_app.route("/upload_video", methods=["POST"])
@@ -408,6 +438,11 @@ def upload_youtube():
     return render_template("upload_video.html")
 
 
+############################################################################################################
+############################################ RESULTS ########################################################
+############################################################################################################
+
+
 @flask_app.route("/video/<task_id>", methods=["GET"])
 @login_required
 def upload_video_result(task_id):
@@ -457,69 +492,49 @@ def upload_text_result(task_id):
         return redirect("/")
 
 
-# TODO: return progress if available
-@flask_app.route("/check_text_status/<task_id>")
+############################################################################################################
+##################################### UPDATE ENDPOINTS #####################################################
+############################################################################################################
+
+
+@flask_app.route("/check/<task_id>")
 @login_required
-def check_text_status(task_id):
+def check(task_id):
     task = celery.AsyncResult(task_id)
+    if check_if_user_has_task(current_user.id, task_id):
+        task_database = get_task_by_id(task_id).iloc[0]
+        values = {}
+        values["start_date"] = task_database["task_start_date"].strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
+        values["last_edit_date"] = (
+            task_database["task_last_edit_date"].strftime("%d/%m/%Y %H:%M:%S")
+            if task_database["task_last_edit_date"] is not None
+            else time.strftime("%d/%m/%Y %H:%M:%S")
+        )
+        if task.state == "PENDING" and task_database["result"] != "0":
+            print("RESULT: ", task_database["result"])
+            values["result"] = task_database["result"]
+            values["input_text"] = task_database["input_text"]
+            return values, 286
+        elif task.state == "SUCCESS" or task.state == "FAILURE":
+            values["result"] = task.get()
+            values["input_text"] = task_database["input_text"]
+            print(values)
+            return values, 286
+        else:
+            values["result"] = task.state
+            values["input_text"] = task_database["input_text"]
+            print(values)
+            return values
+    else:
+        flash("You do not have permission to view this task.", category="error")
+        return redirect("/")
 
-    if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
-        result = get_task_by_id(task_id).iloc[0]["result"]
-        print("RESULT: ", result)
-        if result != "0":
-            return result, 286
 
-    print(task.state)
-    if task.state == "SUCCESS" or task.state == "FAILURE":
-        return task.get(), 286
-    return task.state
-
-
-@flask_app.route("/check_video_status/<task_id>")
-@login_required
-def check_video_status(task_id):
-    task = celery.AsyncResult(task_id)
-
-    if task.state == "PENDING" and check_if_user_has_task(current_user.id, task_id):
-        result = get_task_by_id(task_id).iloc[0]["result"]
-        print("RESULT: ", result)
-        if result != "0":
-            return result, 286
-
-    print(task.state)
-    if task.state == "SUCCESS":
-        return task.get(), 286
-    elif task.state == "FAILURE":
-        return "", 286
-    return task.state
-
-
-@flask_app.route("/check_video_text_status/<task_id>")
-@login_required
-def check_video_text_status(task_id):
-    task_graph = get_task_graph(task_id)
-    speech_texter_id = task_graph["speech_texter"][0]
-    task = celery.AsyncResult(speech_texter_id)
-
-    if (
-        check_if_user_has_task(current_user.id, task_id)
-        and get_task_attribute(task_id, "is_finished").iloc[0]["is_finished"]
-    ):
-        return get_task_attribute(task_id, "input_text").iloc[0]["input_text"], 286
-
-    print(task.state)
-    if task.state == "PENDING" and check_if_user_has_task(
-        current_user.id, speech_texter_id
-    ):
-        result = get_task_by_id(speech_texter_id).iloc[0]["result"]
-        print("RESULT: ", result)
-        if result != "0":
-            return result, 286
-
-    print(task.state)
-    if task.state == "SUCCESS" or task.state == "FAILURE":
-        return task.get(), 286
-    return task.state
+############################################################################################################
+############################################ RETRY #########################################################
+############################################################################################################
 
 
 @flask_app.route("/retry_text/<task_id>", methods=["GET", "POST"])
@@ -588,6 +603,11 @@ def retry_video(task_id):
     return redirect("/video/" + task_id)
 
 
+############################################################################################################
+############################################ REMOVE ########################################################
+############################################################################################################
+
+
 @flask_app.route("/remove_text/<task_id>", methods=["GET", "POST"])
 @login_required
 def remove_task(task_id):
@@ -608,6 +628,10 @@ def remove_video(task_id):
     flash("Task removed.", category="success")
     return redirect("/profile/tasks")
 
+
+############################################################################################################
+############################################ MAIN ##########################################################
+############################################################################################################
 
 if __name__ == "app" or __name__ == "__main__":
     flask_app.run(debug=True, host="0.0.0.0")
