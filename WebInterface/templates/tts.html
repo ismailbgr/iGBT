@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- TODO: WebInterface: Mini navbar is not working properly at task result page -->
+<!-- add remove button to right corner -->
+<div class="w3-display-container w3-right">
+    <button onclick="window.location.href='/remove_text/{{ task_id }}'"
+        class="w3-button w3-display-topright w3-red">Delete</button>
+</div>
+<div class="w3-row-padding my-below-background-color w3-padding-64 w3-container">
+    <div class="w3-content">
+        <div class="w3-center">
+            <form method="POST" action="/tts/{{ task_id }}/send">
+
+                <h1>Text To Speech</h1>
+                <button type="button" onclick="accordion('Input')"
+                    class="w3-button w3-block w3-left-align akordiyon-buton">
+                    Input Text</button>
+                <div id="Input" class="w3-container w3-hide akordiyon-cikti  w3-show">
+                    <p>
+                        Below is the result of the summarization. This text is editable and it will be used as input for
+                        the Text To Speech task.
+                    </p>
+                    <!-- create a form and put the input text in it. It must be editable. and there must be a retry button -->
+                    <div class="w3-container">
+                        <label for="input_text"></label>
+                        <textarea class="w3review" name="input_text" rows="4" cols="50" id="input_text">
+                        </textarea>
+                    </div>
+                </div>
+
+                <button type="button" onclick="accordion('Language')"
+                    class="w3-button w3-block w3-left-align akordiyon-buton">
+                    Language</button>
+                <div id="Language" class="w3-container w3-hide akordiyon-cikti w3-show">
+                    <p>
+                        Language is automatically detected from the input text. If you want to change it, you can select
+                        from the list below.
+                    </p>
+                    <!-- add a dropdown -->
+                    <div>
+                        <select name="language" id="language">
+                            <option value="auto">Auto</option>
+                            <option value="en">English</option>
+                            <option value="tr">Turkish</option>
+                            <option value="de">Deutsch</option>
+
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="w3-button  submit-button w3-padding-large w3-large w3-margin-top">Send
+                    to TTS</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+<script>
+    function get_status()
+    {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/check/{{ task_id }}", true);
+        xhr.onload = function ()
+        {
+            if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 286))
+            {
+                var result = JSON.parse(xhr.responseText);
+                // document.getElementById("input_text").innerHTML = result.input_text;
+                document.getElementById("input_text").innerHTML = result.result;
+                // document.getElementById("start_date").innerHTML = result.start_date;
+                // document.getElementById("last_edit_date").innerHTML = result.last_edit_date;
+            }
+            if (xhr.status != 286)
+            {
+                setTimeout(get_status, 1000);
+            }
+        }
+        xhr.send();
+    }
+    get_status();
+</script>
+{% endblock %}
