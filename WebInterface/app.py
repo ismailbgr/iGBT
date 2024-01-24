@@ -150,7 +150,11 @@ def logout():
 # create a route for home page
 @flask_app.route("/")
 def home():
-    available_llms = ["ChatGPT", "Bard", "Ollama"]
+    available_llms = [
+        {"name": "Ollama", "isApiRequired": False},
+        {"name": "Chat GPT", "isApiRequired": True},
+        {"name": "Bard", "isApiRequired": True},
+    ]
     return render_template("index.html", llms=available_llms)
 
 
@@ -627,6 +631,26 @@ def remove_video(task_id):
     remove_video_from_db(task_id)
     flash("Task removed.", category="success")
     return redirect("/profile/tasks")
+
+
+############################################################################################################
+############################################ TTS ############################################################
+############################################################################################################
+
+
+@flask_app.route("/tts/<task_id>", methods=["GET", "POST"])
+@login_required
+def tts(task_id):
+    print(task_id)
+    return render_template("tts.html", task_id=task_id)
+
+
+@flask_app.route("/tts/<task_id>/send", methods=["GET", "POST"])
+@login_required
+def tts_send(task_id):
+    print(task_id)
+    print(request.form)
+    return redirect("/tts/" + task_id)
 
 
 ############################################################################################################

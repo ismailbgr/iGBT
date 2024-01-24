@@ -51,19 +51,19 @@
       <button onclick="accordion('Create')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Create...</button>
       <div id="Create" class="w3-container w3-hide akordiyon-cikti  w3-show">
-        <table class="w3-table">
-          <tr>
-            <td><button class="w3-button w3-block akordiyon-cikti">TTS</button></td>
-            <td><button class="w3-button w3-block akordiyon-cikti">Presentation</button></td>
-            <!-- <td><button class="w3-button w3-display-topright w3-red">Video</button></td> -->
-          </tr>
-        </table>
+        <div class="grid-container">
+          <div class="w3-card-4 grid-item my-below-background-color">
+            <button class="w3-button w3-block akordiyon-cikti"
+              onclick="window.location.href='/tts/{{ task_id }}'">TTS</button>
+          </div>
+          <div class="w3-card-4 grid-item my-below-background-color">
+            <button class="w3-button w3-block akordiyon-cikti">Presentation</button>
+          </div>
+        </div>
       </div>
-
     </div>
   </div>
 </div>
-
 <script>
   function get_status()
   {
@@ -88,4 +88,5 @@
   }
   get_status();
 </script>
+
 {% endblock %}
