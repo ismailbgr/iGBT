@@ -134,8 +134,6 @@
               <p>Please enter your API key</p>
               <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
             </div>
-            <button type="submit"
-              class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
           <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
             onclick="showLoading()" disabled>Summarize</button>
@@ -152,86 +150,85 @@
 
     </div>
   </div>
-</div>
 
-<!-- Second Grid -->
-<div class="w3-row-padding my-below-background-color w3-padding-64 w3-container input-cards">
-  <div class=" w3-content">
 
-    <div class="w3-twothird ">
-      <h1>Summarize Text</h1>
+  <!-- Second Grid -->
+  <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container input-cards">
+    <div class=" w3-content">
 
-      {% if current_user.is_authenticated %}
-      <form method="POST" action="/upload_text">
-        <div class="w3-container">
-          <h5>Please upload the text that you want to summarize:</h5>
-          <label for="text"></label>
-          <textarea class="w3review" name="w3review" rows="4" cols="50"></textarea>
-          <div>
-            <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
-              {% for llm in llms %}
-              <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
-              {% endfor %}
-            </select>
+      <div class="w3-twothird ">
+        <h1>Summarize Text</h1>
+
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="/upload_text">
+          <div class="w3-container">
+            <h5>Please upload the text that you want to summarize:</h5>
+            <label for="text"></label>
+            <textarea class="w3review" name="w3review" rows="4" cols="50"></textarea>
+            <div>
+              <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
+                {% for llm in llms %}
+                <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="apiInput">
+              <p>Please enter your API key</p>
+              <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
+            </div>
+            <button type="submit"
+              class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
-          <div class="apiInput">
-            <p>Please enter your API key</p>
-            <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
+        </form>
+        {% else %}
+        <h5>Please login to upload text.</h5>
+        {% endif %}
+      </div>
+
+      <div class="w3-third w3-center">
+        <i class="fa fa-file-text w3-padding-64 w3-text-red w3-margin-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Third Grid -->
+
+  <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container  input-cards">
+    <div class=" w3-content">
+      <div class="w3-third w3-center">
+        <i class="fa fa-play w3-padding-64 w3-text-red"></i>
+      </div>
+
+      <div class="w3-twothird">
+        <h1>Summarize Youtube Video</h1>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="/upload_youtube">
+          <div class="w3-container">
+            <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
+            <label for="text"></label>
+            <textarea class="w3review" type="text" id="youtube_link" name="youtube_link"></textarea>
+            <div>
+              <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
+                {% for llm in llms %}
+                <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="apiInput">
+              <p>Please enter your API key</p>
+              <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
+            </div>
+            <button type="submit"
+              class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
-          <button type="submit"
-            class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
-        </div>
-      </form>
+        </form>
+      </div>
       {% else %}
       <h5>Please login to upload text.</h5>
       {% endif %}
     </div>
 
-    <div class="w3-third w3-center">
-      <i class="fa fa-file-text w3-padding-64 w3-text-red w3-margin-right"></i>
-    </div>
   </div>
-</div>
-
-<!-- Third Grid -->
-
-<div class="w3-row-padding my-below-background-color w3-padding-64 w3-container  input-cards">
-  <div class=" w3-content">
-    <div class="w3-third w3-center">
-      <i class="fa fa-play w3-padding-64 w3-text-red"></i>
-    </div>
-
-    <div class="w3-twothird">
-      <h1>Summarize Youtube Video</h1>
-      {% if current_user.is_authenticated %}
-      <form method="POST" action="/upload_youtube">
-        <div class="w3-container">
-          <h5>Please paste the link of the Youtube video that you want to summarize:</h5>
-          <label for="text"></label>
-          <textarea class="w3review" type="text" id="youtube_link" name="youtube_link"></textarea>
-          <div>
-            <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
-              {% for llm in llms %}
-              <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="apiInput">
-            <p>Please enter your API key</p>
-            <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
-          </div>
-          <button type="submit"
-            class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
-        </div>
-        <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
-    </div>
-    </form>
-    {% else %}
-    <h5>Please login to upload text.</h5>
-    {% endif %}
-  </div>
-
-</div>
 
 </div>
 </div>
