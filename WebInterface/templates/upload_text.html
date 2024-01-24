@@ -14,7 +14,7 @@
       <h1>Summarize Text</h1>
       <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Input Text</button>
-      <div id="Input" class="w3-container w3-hide akordiyon-cikti">
+      <div id="Input" class="w3-container w3-hide akordiyon-cikti  w3-show">
         <!-- create a form and put the input text in it. It must be editable. and there must be a retry button -->
         <form method="POST" action="/retry_text/{{ task_id }}">
           <div class="w3-container">
@@ -35,7 +35,7 @@
 
       <button onclick="accordion('Information')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Information</button>
-      <div id="Information" class="w3-container w3-hide akordiyon-cikti">
+      <div id="Information" class="w3-container w3-hide akordiyon-cikti  w3-show">
         <table class="w3-table">
           <tr>
             <td>Start Date</td>
@@ -44,6 +44,18 @@
           <tr>
             <td>Last Edit Date</td>
             <td id="last_edit_date">{{ last_edit_date }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <button onclick="accordion('Create')" class="w3-button w3-block w3-left-align akordiyon-buton">
+        Create...</button>
+      <div id="Create" class="w3-container w3-hide akordiyon-cikti  w3-show">
+        <table class="w3-table">
+          <tr>
+            <td><button class="w3-button w3-block akordiyon-cikti">TTS</button></td>
+            <td><button class="w3-button w3-block akordiyon-cikti">Presentation</button></td>
+            <!-- <td><button class="w3-button w3-display-topright w3-red">Video</button></td> -->
           </tr>
         </table>
       </div>
