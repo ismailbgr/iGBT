@@ -7,3 +7,4 @@ google-cloud-speech
 PyYAML
 pocketsphinx
 openai-whisper
+webvtt-py

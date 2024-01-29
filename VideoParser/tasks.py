@@ -87,7 +87,7 @@ def youtube_dl(self, url):
     output_file = f"/data/{uuidname}.mp4"
 
     # TODO: VideoParser: youtube_dl: only download audio as mp3
-    # assignees: ismailgbr
+    # assignees: ismailbgr
     # labels: bug
     def download_progress_hook(d):
         if d["status"] == "finished":
@@ -101,12 +101,18 @@ def youtube_dl(self, url):
 
     ydl_opts = {
         "format": "mp4",
+        "writesubtitles": True,
         "progress_hooks": [download_progress_hook],
         "outtmpl": output_file,
     }
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+    except Exception as e:
+        # print error and retry
+        print(f"Error downloading: {e}, retrying in 5 seconds.")
+        current_task.retry(countdown=5, max_retries=3)
 
     print(f"Download completed. Output file: {output_file}")
     mp3_file = convert_video_to_mp3(output_file)
