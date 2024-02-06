@@ -84,11 +84,8 @@ def youtube_dl(self, url):
 
     current_task.update_state(state=states.STARTED)
     uuidname = str(uuid.uuid4())
-    output_file = f"/data/{uuidname}.mp4"
+    output_file = f"/data/{uuidname}.mp3"
 
-    # TODO: VideoParser: youtube_dl: only download audio as mp3
-    # assignees: ismailbgr
-    # labels: bug
     def download_progress_hook(d):
         if d["status"] == "finished":
             print("Done downloading")
@@ -100,7 +97,7 @@ def youtube_dl(self, url):
             print(f"Fraction downloaded: {d['_percent_str']}")
 
     ydl_opts = {
-        "format": "mp4",
+        "format": "bestaudio",
         "writesubtitles": True,
         "progress_hooks": [download_progress_hook],
         "outtmpl": output_file,
@@ -115,7 +112,5 @@ def youtube_dl(self, url):
         current_task.retry(countdown=5, max_retries=3)
 
     print(f"Download completed. Output file: {output_file}")
-    mp3_file = convert_video_to_mp3(output_file)
-    print(f"Conversion completed. Output file: {mp3_file}")
     current_task.update_state(state=states.SUCCESS)
-    return mp3_file
+    return output_file
