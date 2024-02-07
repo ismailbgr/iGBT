@@ -24,21 +24,13 @@ class iGBTTS:
             print(output_filename)
             tts.tts_to_file(text=text, file_path=output_filename)
         elif self.model == "PYTTSX3":
-            """
-            TODO: control the voice speed and volume
-            RATE
-            rate = engine.getProperty('rate')   # getting details of current speaking rate
-            print (rate)                        #printing current voice rate
-            engine.setProperty('rate', 125)     # setting up new voice rate
-
-
-            VOLUME
-            volume = engine.getProperty('volume')   #getting to know current volume level (min=0 and max=1)
-            print (volume)                          #printing current volume level
-            engine.setProperty('volume',1.0)
-
-            """
             engine = pyttsx3.init()
+            rate = engine.getProperty(
+                "rate"
+            )  
+            engine.setProperty("rate", (rate * 45 / 100))
+
+            engine.setProperty('volume',0.7)
             engine.save_to_file(text, output_filename)
             engine.runAndWait()
             engine.stop()
