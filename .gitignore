@@ -171,3 +171,5 @@ config/postgres/*
 SharedData/*
 
 .obsidian
+
+.DS_Store
