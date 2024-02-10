@@ -1,6 +1,7 @@
 from io import StringIO
+import os
 import time
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 from flask_login import (
     LoginManager,
     login_user,
@@ -64,9 +65,20 @@ celery.conf.task_routes = (
         ("convert_video_to_mp3", {"queue": "videoparser"}),
         ("speech2text", {"queue": "speechtexter"}),
         ("taskchecker", {"queue": "taskchecker"}),
+        ("tts", {"queue": "tts"}),
     ],
 )
+available_llms = [
+    {"name": "Ollama", "isApiRequired": False},
+    {"name": "Chat GPT", "isApiRequired": True},
+    {"name": "Bard", "isApiRequired": True},
+]
 
+convert_llm_name = {
+    "Ollama": "ollama",
+    "Chat GPT": "gpt3",
+    "Bard": "bard",
+}
 
 ############################################################################################################
 ######################################### DATABASE##########################################################
@@ -150,11 +162,6 @@ def logout():
 # create a route for home page
 @flask_app.route("/")
 def home():
-    available_llms = [
-        {"name": "Ollama", "isApiRequired": False},
-        {"name": "Chat GPT", "isApiRequired": True},
-        {"name": "Bard", "isApiRequired": True},
-    ]
     return render_template("index.html", llms=available_llms)
 
 
@@ -347,13 +354,19 @@ def upload_video():
 
         thumbnail = request.form["thumbnail"]
         thumbnail = thumbnail.split(",")[1]
-
+        model_name = request.form["llm"]
+        api_key = request.form["apikey"]
         # send the task to celery
         chain = signature(
             "convert_video_to_mp3", args=[fpath], queue="videoparser", app=celery
         )
         chain |= signature("speech2text", queue="speechtexter", app=celery)
-        chain |= signature("summarize", queue="llm", app=celery)
+        chain |= signature(
+            "summarize",
+            kwargs={"model_name": convert_llm_name[model_name], "api_key": api_key},
+            queue="llm",
+            app=celery,
+        )
         res = chain.apply_async()
         task_id = res.id
 
@@ -383,8 +396,15 @@ def upload_text():
         if len(text) < 2:
             flash("Lütfen en az 2 karakter giriniz.", category="error")
             return redirect("/")
-
-        res = celery.send_task("summarize", args=[text])
+        model_name = request.form["llm"]
+        print(model_name)
+        api_key = request.form["apikey"]
+        res = celery.send_task(
+            "summarize",
+            args=[text],
+            kwargs={"model_name": convert_llm_name[model_name], "api_key": api_key},
+            queue="llm",
+        )
         task_id = res.id
 
         file_name = text[:20] + "..."
@@ -415,16 +435,20 @@ def upload_youtube():
             flash("Invalid youtube link.", category="error")
             return redirect("/")
 
+        model_name = request.form["llm"]
+        api_key = request.form["apikey"]
         # res = celery.send_task("summarize", args=[text])
         chain = signature("youtube_dl", args=[url], queue="videoparser", app=celery)
         chain |= signature("speech2text", queue="speechtexter", app=celery)
-        chain |= signature("summarize", queue="llm", app=celery)
+        chain |= signature(
+            "summarize",
+            kwargs={"model_name": convert_llm_name[model_name], "api_key": api_key},
+            queue="llm",
+            app=celery,
+        )
 
         res = chain.apply_async()
         task_id = res.id
-
-        # TODO: Get youtube title without importing pytube in webinterface
-
         llm_id = res.id
         speech_texter_id = res.parent.id
         video_parser_id = res.parent.parent.id
@@ -534,6 +558,28 @@ def check(task_id):
     else:
         flash("You do not have permission to view this task.", category="error")
         return redirect("/")
+
+
+@flask_app.route("/check_tts/<task_id>")
+@login_required
+def check_tts(task_id):
+    file_path = "/data/" + task_id + ".wav"
+    if os.path.exists(file_path):
+        print("File exists")
+
+        return {"isFinished": "True"}, 286
+    else:
+        return {"isFinished": "False"}, 420
+
+
+@flask_app.route("/get_tts/<task_id>")
+@login_required
+def get_tts(task_id):
+    file_path = "/data/" + task_id + ".wav"
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        return "File not found", 404
 
 
 ############################################################################################################
@@ -650,6 +696,12 @@ def tts(task_id):
 def tts_send(task_id):
     print(task_id)
     print(request.form)
+    input_text = request.form["input_text"]
+    async_res = celery.send_task(
+        "tts", args=["TTS", input_text, "en", task_id], queue="tts"
+    )
+    new_task_id = async_res.id
+    print(new_task_id)
     return redirect("/tts/" + task_id)
 
 
