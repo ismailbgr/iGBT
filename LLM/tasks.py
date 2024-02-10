@@ -20,15 +20,18 @@ app = Celery(
 # app.conf.task_routes = {"summarize_text": {"queue": "llm"}}
 
 
-print("initializing llm...")
+print("initializing ollama...")
 llm = LLM("ollama")
-print("llm initialized")
-
+print("ollama initialized")
+del llm
 
 @app.task(name="summarize")
-def summarize(text):
+def summarize(text, model_name='ollama', api_key=None):
     print("summarizing...")
     print("text: ", text)
+
+    llm = LLM(model_name, api_key)
+    
     # change task state to started
     try:
         current_task.update_state(state=states.STARTED)
