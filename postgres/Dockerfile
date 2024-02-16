@@ -1,4 +1,4 @@
-FROM postgres
+FROM postgres:16.2
 
 # create a database named 'igbt' and a user named 'igbt' with password 'bitircez'
 

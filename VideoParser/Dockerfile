@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.19.1
 
 # add app group
 RUN addgroup -S appuser -g 1000
