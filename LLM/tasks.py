@@ -21,7 +21,7 @@ app = Celery(
 
 
 print("initializing llm...")
-llm = LLM("ollama")
+llm = LLM(config["llm"]["model"])
 print("llm initialized")
 
 

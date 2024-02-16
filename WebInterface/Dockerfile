@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.19.1
 
 RUN apk update && apk add python3-dev gcc libc-dev py3-pip
 

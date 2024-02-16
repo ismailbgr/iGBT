@@ -13,10 +13,12 @@ class LLM:
         self.model_name = llm_model
         self.api = api_key
 
-        if self.model_name not in ["bard", "gpt3", "ollama"]:
+        if self.model_name not in ["bard", "gpt3", "ollama", "mock"]:
             raise Exception("Invalid LLM model")
 
-        if self.model_name != "ollama" and (self.api == "" or self.api == None):
+        if self.model_name == "mock":
+            print("Mock model created")
+        elif (self.model_name != "ollama") and (self.api == "" or self.api == None):
             raise Exception("Invalid LLM api key")
 
         if self.model_name == "ollama":
@@ -55,6 +57,12 @@ class LLM:
                 return pretty["response"][:-13]
             else:
                 return pretty["response"]
+
+        elif self.model_name == "mock":
+            return """This is a long text that is a mock answer.
+                    It has multiple lines and is a long answer.
+                    It is a mock answer for testing purposes.
+            """
 
         else:
             raise Exception("Invalid LLM model in getting answer.")
