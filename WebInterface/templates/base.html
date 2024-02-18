@@ -88,7 +88,7 @@
         .akordiyon-buton {
             box-shadow: 0px 0px 7px 5px rgba(0, 0, 0, 0.35);
             border-radius: 3px;
-            z-index: 99;
+
             position: relative;
             margin-top: 15px;
         }
@@ -253,36 +253,28 @@
 
     <script>
         // Used to toggle the menu on small screens when clicking on the menu button
-        function myFunction()
-        {
+        function myFunction() {
             var x = document.getElementById("navDemo");
-            if (x.className.indexOf("w3-show") == -1)
-            {
+            if (x.className.indexOf("w3-show") == -1) {
                 x.className += " w3-show";
-            } else
-            {
+            } else {
                 x.className = x.className.replace(" w3-show", "");
             }
         }
 
-        document.addEventListener('invalid', (function ()
-        {
-            return function (e)
-            {
+        document.addEventListener('invalid', (function () {
+            return function (e) {
                 e.preventDefault();
                 document.getElementById("customFile").focus();
             };
         })(), true);
     </script>
     <script>
-        function accordion(id)
-        {
+        function accordion(id) {
             var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1)
-            {
+            if (x.className.indexOf("w3-show") == -1) {
                 x.className += " w3-show";
-            } else
-            {
+            } else {
                 x.className = x.className.replace(" w3-show", "");
             }
         }

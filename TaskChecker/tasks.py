@@ -91,6 +91,9 @@ def check_task(task_id, user_id):
         speech_texter_result is not None
         and not get_task_attribute(task_id, "is_finished").iloc[0]["is_finished"]
     ):
+        speech_texter_result = (
+            str(speech_texter_result).replace("'", "&#39;").replace('"', "&#34;")
+        )
         set_task_attribute(task_id, "input_text", speech_texter_result)
     set_task_attribute(task_id, "is_finished", True)
     return task_result

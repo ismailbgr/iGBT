@@ -318,14 +318,11 @@
 
 
 <script>
-  function showLoading()
-  {
+  function showLoading() {
     var customFile = document.getElementById('customFile');
-    if (customFile.value.length == 0)
-    {
+    if (customFile.value.length == 0) {
       alert("Please upload a video file!");
-    } else
-    {
+    } else {
       document.getElementById('loading-spinner').style.display = 'block';
       document.getElementById('loading-overlay').style.display = 'block';
     }
@@ -336,8 +333,7 @@
   // create thumbnail of video
   var filepicker = document.getElementById('customFile');
 
-  filepicker.addEventListener('change', function (e)
-  {
+  filepicker.addEventListener('change', function (e) {
     var file = e.target.files[0];
     var fileURL = URL.createObjectURL(file);
     var video = document.createElement('video');
@@ -345,8 +341,7 @@
     video.src = fileURL;
     // seek video 10 seconds in for thumbnail
     video.currentTime = 1;
-    video.addEventListener('loadeddata', function ()
-    {
+    video.addEventListener('loadeddata', function () {
       var canvas = document.createElement('canvas');
       // canvas.width = video.videoWidth;
       // canvas.height = video.videoHeight;
