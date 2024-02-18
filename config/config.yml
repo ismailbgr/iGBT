@@ -5,5 +5,5 @@ speechtexter:
   model_name: whisper
   model_size: base
 llm:
-  model: mock
-verbose: True
+  model: ollama
+verbose: False
