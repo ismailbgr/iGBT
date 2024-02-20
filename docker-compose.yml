@@ -41,7 +41,7 @@ services:
     image: mher/flower:2.0
     command:
       [
-        'celery', 
+        'celery',
         '--broker=amqp://rabbitmq:5672',
         'flower',
         '--port=5555'
@@ -182,3 +182,4 @@ services:
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
+      - ./config/tts:/.local/share/tts

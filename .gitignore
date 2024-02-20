@@ -167,6 +167,9 @@ old/*
 # ollama stuff
 config/ollama/*
 
+# tts stuff
+config/tts/*
+
 config/postgres/*
 SharedData/*
 
