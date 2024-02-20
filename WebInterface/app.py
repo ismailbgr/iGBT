@@ -475,7 +475,6 @@ def upload_youtube():
 @login_required
 def upload_video_result(task_id):
     if check_if_user_has_task(current_user.id, task_id):
-        # TODO: create an endpoint to check the status of the task
         task = get_task_by_id(task_id)
         input_text = task.iloc[0]["input_text"]
         start_date = task.iloc[0]["task_start_date"].strftime("%d/%m/%Y %H:%M:%S")
