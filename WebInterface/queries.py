@@ -90,7 +90,7 @@ def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
 
 def add_task_without_thumbnail(taskid, file_name, type, input_text):
     current_date = pd.Timestamp.now()
-
+    # TODO: fix special characters
     query = f"insert into \"Task\" (task_id, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
     print(query)
     engine.execute(text(query))

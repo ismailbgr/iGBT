@@ -65,13 +65,13 @@ services:
       - ./config:/app/config
       - ./SharedData/:/data
       - ./config/ollama:/root/.ollama
-      # deploy:
-      #   resources:
-      #     reservations:
-      # devices:
-      #   - driver: nvidia
-      #     count: 1
-      #     capabilities: [ gpu ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
   llm:
     build:
       context: LLM
@@ -89,20 +89,20 @@ services:
     build:
       context: SpeechTexter
       dockerfile: Dockerfile
-    user: 1000:1000
+    # user: 1000:1000
     hostname: speechtexter
     depends_on:
       - rabbitmq
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [ gpu ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
 
   taskchecker:
     build:
