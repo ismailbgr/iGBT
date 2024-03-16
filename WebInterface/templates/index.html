@@ -93,6 +93,10 @@
     }
 
   }
+
+  .apiInput {
+    display: none;
+  }
 </style>
 {% block title %}Home{% endblock %}
 {% endblock %}
@@ -119,19 +123,23 @@
                 </div>
               </div>
             </div>
-            <div style="margin-top: 0.5rem;">
-              <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+            <div>
+              <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
                 {% for llm in llms %}
-                <option value="{{ llm }}">{{ llm }}</option>
+                <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
                 {% endfor %}
               </select>
             </div>
-            <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
-              onclick="showLoading()" disabled>Summarize</button>
-            <div id="loading-overlay"></div>
-            <div id="loading-spinner">
-              <div class="spinner"></div>
+            <div class="apiInput">
+              <p>Please enter your API key</p>
+              <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
             </div>
+          </div>
+          <button type="submit" class="w3-button submit-button w3-padding-large w3-large w3-margin-top"
+            onclick="showLoading()" disabled>Summarize</button>
+          <div id="loading-overlay"></div>
+          <div id="loading-spinner">
+            <div class="spinner"></div>
           </div>
           <input type="hidden" name="thumbnail" id="thumbnail" value="">
         </form>
@@ -142,6 +150,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Second Grid -->
   <div class="w3-row-padding my-below-background-color w3-padding-64 w3-container input-cards">
@@ -157,11 +166,15 @@
             <label for="text"></label>
             <textarea class="w3review" name="w3review" rows="4" cols="50"></textarea>
             <div>
-              <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+              <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
                 {% for llm in llms %}
-                <option value="{{ llm }}">{{ llm }}</option>
+                <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
                 {% endfor %}
               </select>
+            </div>
+            <div class="apiInput">
+              <p>Please enter your API key</p>
+              <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
             </div>
             <button type="submit"
               class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
@@ -195,24 +208,29 @@
             <label for="text"></label>
             <textarea class="w3review" type="text" id="youtube_link" name="youtube_link"></textarea>
             <div>
-              <select name="llm" id="llm" class="w3-input w3-border w3-round-large">
+              <select onchange="show_api_input(this)" name="llm" id="llm" class="w3-input w3-border w3-round-large">
                 {% for llm in llms %}
-                <option value="{{ llm }}">{{ llm }}</option>
+                <option value="{{ llm.name }}" data-is-api-required="{{llm.isApiRequired}}">{{ llm.name }}</option>
                 {% endfor %}
               </select>
+            </div>
+            <div class="apiInput">
+              <p>Please enter your API key</p>
+              <input class="w3review" name="apikey" rows="1" cols="50" style="height: 1rem;"></input>
             </div>
             <button type="submit"
               class="w3-button submit-button w3-padding-large w3-large w3-margin-top">Summarize</button>
           </div>
         </form>
-        {% else %}
-        <h5>Please login to upload text.</h5>
-        {% endif %}
       </div>
-
+      {% else %}
+      <h5>Please login to upload text.</h5>
+      {% endif %}
     </div>
 
   </div>
+
+</div>
 </div>
 
 <!-- Small first grid -->
@@ -359,6 +377,18 @@
 
   });
 
+  function show_api_input(elem)
+  {
+    var elemParent = elem.parentElement.parentElement;
+    if (elem.options[elem.selectedIndex].dataset.isApiRequired == 'True')
+    {
+      elemParent.getElementsByClassName('apiInput')[0].style.display = 'block';
+    }
+    else
+    {
+      elemParent.getElementsByClassName('apiInput')[0].style.display = 'none';
+    }
+  }
 </script>
 
 

@@ -14,7 +14,7 @@
       <h1>Summarize Text</h1>
       <button onclick="accordion('Input')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Input Text</button>
-      <div id="Input" class="w3-container w3-hide akordiyon-cikti">
+      <div id="Input" class="w3-container w3-hide akordiyon-cikti  w3-show">
         <!-- create a form and put the input text in it. It must be editable. and there must be a retry button -->
         <form method="POST" action="/retry_text/{{ task_id }}">
           <div class="w3-container">
@@ -35,7 +35,7 @@
 
       <button onclick="accordion('Information')" class="w3-button w3-block w3-left-align akordiyon-buton">
         Information</button>
-      <div id="Information" class="w3-container w3-hide akordiyon-cikti">
+      <div id="Information" class="w3-container w3-hide akordiyon-cikti  w3-show">
         <table class="w3-table">
           <tr>
             <td>Start Date</td>
@@ -48,10 +48,22 @@
         </table>
       </div>
 
+      <button onclick="accordion('Create')" class="w3-button w3-block w3-left-align akordiyon-buton">
+        Create...</button>
+      <div id="Create" class="w3-container w3-hide akordiyon-cikti  w3-show">
+        <div class="grid-container">
+          <div class="w3-card-4 grid-item my-below-background-color">
+            <button class="w3-button w3-block akordiyon-cikti"
+              onclick="window.location.href='/tts/{{ task_id }}'">TTS</button>
+          </div>
+          <div class="w3-card-4 grid-item my-below-background-color">
+            <button class="w3-button w3-block akordiyon-cikti">Presentation</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
 <script>
   function get_status()
   {
@@ -76,4 +88,5 @@
   }
   get_status();
 </script>
+
 {% endblock %}
