@@ -1,0 +1,10 @@
+- [] Video atıldığında anlık olarak güncellenmiyor.
+- [x] Whisper model mount edilmiyor.
+- [] Whisper modeli speechtexter başladığında indirilecek. 
+- [] Videolar için information kısmı çalışmıyor.
+- [] Youtube video thumbnail'ı gösterilmiyor.
+- [] Chatgpt entegresi çalışmıyor.
+- [] Bard tamamen kaldırılabilir veya https://github.com/dsdanielpark/Gemini-API kullanılabilir.
+- [] Promptlar güncellenmeli.
+- [] Database'e yazan tüm fonksiyonlarda sanitize edilmeli. (e.g. add_task_with_thumbnail)
+- [] FLOWER_UNAUTHENTICATED_API eklenecek.

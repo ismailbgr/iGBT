@@ -89,13 +89,13 @@ services:
     build:
       context: SpeechTexter
       dockerfile: Dockerfile
-    # user: 1000:1000
     hostname: speechtexter
     depends_on:
       - rabbitmq
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
+      - ./config/speechtexter/:/root/.cache
     deploy:
       resources:
         reservations:

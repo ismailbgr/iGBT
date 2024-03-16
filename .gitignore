@@ -170,9 +170,12 @@ config/ollama/*
 # tts stuff
 config/tts/*
 
+config/speechtexter/*
+
 config/postgres/*
 SharedData/*
 
 .obsidian
 
 .DS_Store
+
