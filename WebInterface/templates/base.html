@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Linear+A&family=Playfair+Display&display=swap');
 
@@ -235,7 +236,7 @@
 
 
 
-    <div id="content">
+    <div id="content" class="animate__animated animate__fadeIn">
         {% block content %}{% endblock %}
     </div>
 
@@ -263,17 +264,22 @@
 
     <script>
         // Used to toggle the menu on small screens when clicking on the menu button
-        function myFunction() {
+        function myFunction()
+        {
             var x = document.getElementById("navDemo");
-            if (x.className.indexOf("w3-show") == -1) {
+            if (x.className.indexOf("w3-show") == -1)
+            {
                 x.className += " w3-show";
-            } else {
+            } else
+            {
                 x.className = x.className.replace(" w3-show", "");
             }
         }
 
-        document.addEventListener('invalid', (function () {
-            return function (e) {
+        document.addEventListener('invalid', (function ()
+        {
+            return function (e)
+            {
                 e.preventDefault();
                 document.getElementById("customFile").focus();
             };
@@ -291,11 +297,14 @@
         }
     </script>
     <script>
-        function accordion(id) {
+        function accordion(id)
+        {
             var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1) {
+            if (x.className.indexOf("w3-show") == -1)
+            {
                 x.className += " w3-show";
-            } else {
+            } else
+            {
                 x.className = x.className.replace(" w3-show", "");
             }
         }

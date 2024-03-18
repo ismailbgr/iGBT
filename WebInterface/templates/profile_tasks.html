@@ -43,8 +43,8 @@
 
         <div class="w3-card-4 grid-item my-below-background-color" style="cursor:pointer;"
             onclick="goToVideo(`{{row['type'] }}`,`{{row['task_id'] }}`)">
-            <img style="border-top-right-radius: 25px; border-top-left-radius: 25px;"
-                src="data:image/png;base64,{{ row['url'] }}">
+            <img style="border-top-right-radius: 25px; border-top-left-radius: 25px; max-width: 320px; max-height: 180px;"
+                src="{% if not row['url'].startswith('http') %}data:image/png;base64,{% endif %}{{ row['url'] }}">
             <div class="w3-container w3-center">
                 <p>{{ row['name'] }}</p>
             </div>

@@ -46,6 +46,8 @@ services:
         'flower',
         '--port=5555'
       ]
+    environment:
+      FLOWER_UNAUTHENTICATED_API: 'true'
     ports:
       - 5557:5555
     depends_on:
