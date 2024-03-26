@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Summarize Text{% endblock %}
 {% block content %}
 <!-- TODO: WebInterface: Mini navbar is not working properly at task result page -->
 <!-- add remove button to right corner -->
@@ -57,9 +58,9 @@
             <button class="w3-button w3-block akordiyon-cikti"
               onclick="window.location.href='/tts/{{ task_id }}'">TTS</button>
           </div>
-          <div class="w3-card-4 grid-item my-below-background-color">
+          <!-- <div class="w3-card-4 grid-item my-below-background-color">
             <button class="w3-button w3-block akordiyon-cikti">Presentation</button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

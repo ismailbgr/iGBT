@@ -543,14 +543,20 @@ def check(task_id):
             if task_database["task_last_edit_date"] is not None
             else time.strftime("%d/%m/%Y %H:%M:%S")
         )
-        task_graph = get_task_graph(task_id)
-        speech_texter_id = task_graph["speech_texter"][0]
-        speech_texter_task = celery.AsyncResult(speech_texter_id)
-        
+        try:
+            task_graph = get_task_graph(task_id)
+            speech_texter_id = task_graph["speech_texter"][0]
+            speech_texter_task = celery.AsyncResult(speech_texter_id)
+        except:
+
+            class FakeTaski:
+                def __init__(self):
+                    self.ready = lambda: False
+            speech_texter_task = FakeTaski()
         if task.state == "PENDING" and task_database["result"] != "0":
             print("RESULT: ", task_database["result"])
             values["result"] = task_database["result"]
-            
+
             if speech_texter_task.ready():
                 speech_texter_result = speech_texter_task.get()
                 values["input_text"] = speech_texter_result

@@ -90,13 +90,16 @@
                     to TTS</button>
             </form>
 
-            <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align akordiyon-buton ">
-                Result</button>
-            <div id="Output" class="w3-container w3-hide akordiyon-cikti w3-show">
-                <div id="result">
-                    <p><span>Loading...</span></p>
+            <div class="result-screen hidden">
+                <button onclick="accordion('Output')" class="w3-button w3-block w3-left-align akordiyon-buton ">
+                    Result</button>
+                <div id="Output" class="w3-container w3-hide akordiyon-cikti w3-show">
+                    <div id="result">
+                        <p><span>Loading...</span></p>
+                    </div>
                 </div>
             </div>
+
 
 
         </div>
@@ -135,6 +138,8 @@
                 result_div.innerHTML = "";
                 result_div.appendChild(audio_elem);
                 result_div.appendChild(dl_button);
+
+                document.getElementsByClassName("result-screen")[0].classList.remove("hidden");
 
             }
             if (xhr.status != 286)
