@@ -2,11 +2,11 @@
 This module is an interface to get answer from LLM models you want.
 """
 
-from gemini import Gemini
 import openai
 import requests
 import json
 from openai import OpenAI
+import google.generativeai as genai
 
 """
 Could you please provide a concise and comprehensive summary of the given text? The summary should capture the main points and key details of the text while conveying the author's intended meaning accurately. Please ensure that the summary is well-organized and easy to read, with clear headings and subheadings to guide the reader through each section. The length of the summary should be appropriate to capture the main points and key details of the text, without including unnecessary information or becoming overly long.
@@ -46,6 +46,7 @@ class LLM:
     def __init__(self, llm_model, api_key=None):
         self.model_name = llm_model
         self.api = api_key
+        self.llm_prompt = "You are a summarizing AI. Provide a comprehensive summary of the given video script? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information. Do not mention that it is an video script."
 
         if self.model_name not in ["bard", "gpt3", "ollama", "mock"]:
             raise Exception("Invalid LLM model")
@@ -58,7 +59,10 @@ class LLM:
         if self.model_name == "ollama":
             model_config = {
                 "name": "summarizer",
-                "modelfile": "FROM zephyr:latest\nSYSTEM Can you provide a comprehensive summary of the given video script? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Please ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information.",
+                "modelfile": "FROM mistral:7b-instruct\nSYSTEM " + self.llm_prompt,
+                "options": {
+                    "num_ctx": 20000,
+                },
             }
             requests.post("http://ollama:11434/api/create", json=model_config)
             print("ollama model created")
@@ -68,14 +72,38 @@ class LLM:
             print("gpt3 model created")
 
         if self.model_name == "bard":
-            cookies = {
-                "NID": "512",
-                "__Secure-1PSIDTS": "sidts-CjIBYfD7ZwvpGdmOt4PJ9ftRaWacptiLltVeCYItz6JPJ4NROMQL6-JhGX771zlOBzQ2mRAA",
-                "__Secure-3PSIDTS": "sidts-CjIBYfD7ZwvpGdmOt4PJ9ftRaWacptiLltVeCYItz6JPJ4NROMQL6-JhGX771zlOBzQ2mRAA",
-                "__Secure-1PSIDCC": "AKEyXzVTHF5L-1XDNTUsNnAGtRak3ULaCU_M5EfBatExpPJS3fVyWJz6NHWKzwq3Ue6NM2xXvDks",
-                "__Secure-3PSIDCC": "AKEyXzVM5ZBpuZPuI-qrDqI-3bSAA51-Kk9FJ6-AvQ09FtVzB8a4ZkUNs6erSkYSgfCXKmq_on0",
+
+            genai.configure(api_key="AIzaSyCJJJRNMZ5j-_2hX7AnalZ85lD85sMxbW4")
+            generation_config = {
+                "temperature": 1,
+                "top_p": 1,
+                "top_k": 1,
+                "max_output_tokens": 1000000,
             }
-            self.model = Gemini(cookies=cookies)
+            safety_settings = [
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+                },
+            ]
+
+            self.model = genai.GenerativeModel(
+                model_name="gemini-1.0-pro",
+                generation_config=generation_config,
+                safety_settings=safety_settings,
+            )
 
     def get_answer(self, question):
         print("llm model name: ", self.model_name)
@@ -93,7 +121,7 @@ class LLM:
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a summarizing AI. Provide a comprehensive summary of the given video script? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information. Do not mention that it is an video script.",
+                        "content": self.llm_prompt,
                     },
                     {
                         "role": "user",
@@ -117,14 +145,25 @@ class LLM:
 
         elif self.model_name == "bard":
 
-            prompt = """
-You are a summarizing AI. Provide a comprehensive summary of the given video script? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information.
+            convo = self.model.start_chat(
+                history=[
+                    {
+                        "role": "user",
+                        "parts": [self.llm_prompt],
+                    },
+                    {
+                        "role": "model",
+                        "parts": [
+                            "Okay, I will provide a comprehensive summary of the given video script. Please provide the text you would like me to summarize."
+                        ],
+                    },
+                ]
+            )
 
+            convo.send_message(question)
+            print(convo.last.text)
 
-"""
-            print(self.model.generate_content(prompt + question))
-            return self.model.generate_content(prompt + question)
-
+            return convo.last.text
         elif self.model_name == "mock":
             return """This is a long text that is a mock answer.
                     It has multiple lines and is a long answer.

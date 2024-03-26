@@ -76,7 +76,7 @@
       {
         var result = JSON.parse(xhr.responseText);
         document.getElementById("input_text").innerHTML = result.input_text;
-        document.getElementById("result").innerHTML = result.result;
+        document.getElementById("result").innerHTML = marked.parse((result.result));
         document.getElementById("start_date").innerHTML = result.start_date;
         document.getElementById("last_edit_date").innerHTML = result.last_edit_date;
       }
