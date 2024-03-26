@@ -3,7 +3,7 @@ celery:
   backend: redis://redis:6379/0
 speechtexter:
   model_name: whisper
-  model_size: medium
+  model_size: small
 llm:
   model: ollama
 verbose: False

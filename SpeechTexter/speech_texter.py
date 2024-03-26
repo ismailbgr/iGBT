@@ -5,6 +5,8 @@ from pydub import AudioSegment
 import whisper
 import torch
 
+import gc
+
 
 class Speech2Text:
     """_summary_
@@ -64,7 +66,9 @@ class Speech2Text:
                 raise Exception(
                     "Model size not specified for whisper:" + str(self.model_size)
                 )
-            self.model = whisper.load_model(self.model_size, device="cuda" if is_cuda else "cpu")
+            self.model = whisper.load_model(
+                self.model_size, device="cuda" if is_cuda else "cpu"
+            )
         elif self.model_name == "local":
             self.recognizer = sr.Recognizer()
         elif self.model_name == "mock":
@@ -156,6 +160,12 @@ class Speech2Text:
             result = self.model.transcribe(self.input_file)
             with open(self.output_file, "w", encoding="utf-8") as text_file:
                 text_file.write(result["text"])
+
+            del self.model
+            gc.collect()
+            torch.cuda.empty_cache()
+            print("Whisper model removed from memory.")
+            print("Speech2Text object deleted.")
 
         elif self.model_name == "mock":
             text = """Johannes Gutenberg (1398 – 1468) was a German goldsmith and publisher who introduced printing to Europe. His introduction of mechanical movable
