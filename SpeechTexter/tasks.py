@@ -16,28 +16,6 @@ with open("/app/config/config.yml", "r") as f:
 
 print("config: ", config)
 
-# Load the whisper model to download the first time
-
-
-
-def load_whisper_model():
-    print("Loading whisper model", flush=True)
-    import torch
-    temp_model = whisper.load_model("base")
-    print("Whisper model loaded", flush=True)
-    del temp_model
-    print("Whisper model deleted", flush=True)
-    gc.collect()
-    print("Garbage collected", flush=True)
-    torch.cuda.empty_cache()
-    print("Cuda cache emptied", flush=True)
-
-
-
-# Load the whisper model to download the first time
-threading.Thread(target=load_whisper_model).start()
-
-
 # Create the Celery app
 
 app = Celery(
