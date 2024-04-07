@@ -17,6 +17,9 @@ class FinancialSentimentAnalyzer:
         :param text: The text to analyze.
         :return: A string indicating the sentiment.
         """
+        # clip the text to 512 tokens
+        text = text[:512]
+
         # Encode the text
         inputs = self.tokenizer(
             text, return_tensors="pt", padding=True, truncation=True, max_length=512

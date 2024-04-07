@@ -83,6 +83,7 @@ services:
     depends_on:
       - rabbitmq
       - ollama
+      - sentimentclassifier
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
@@ -186,13 +187,24 @@ services:
       - ./SharedData/:/data
       - ./config/tts:/.local/share/tts
 
+  sentimentclassifier:
+    build:
+      context: SentimentClassifier
+      dockerfile: Dockerfile
+    hostname: sentimentclassifier
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./config:/app/config
+      - ./SharedData/:/data
+
   portainer:
     image: portainer/portainer-ce:latest
-    ports: 
-    - 9443:9443
+    ports:
+      - 9443:9443
     volumes:
-    - data:/data
-    - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 volumes:
   data:
