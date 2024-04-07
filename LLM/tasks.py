@@ -1,3 +1,4 @@
+from time import sleep
 from celery import Celery, current_task, states
 import base64
 import uuid
@@ -5,6 +6,7 @@ from llm import LLM
 import yaml
 import requests
 import threading
+from celery.result import allow_join_result
 
 # Load config
 config = None
@@ -17,6 +19,11 @@ print("config: ", config)
 
 app = Celery(
     "llm", broker=config["celery"]["broker"], backend=config["celery"]["backend"]
+)
+app.conf.task_routes = (
+    [
+        ("classify_sentiment", {"queue": "sentimentclassifier"}),
+    ],
 )
 
 
@@ -57,4 +64,15 @@ def summarize(text, model_name="ollama", api_key=None):
 
     answer = llm.get_answer(text)
 
+    is_finance_video = llm.get_finance_answer(text)
+    if is_finance_video:
+        task = app.send_task("classify_sentiment", args=[text])
+        while not task.ready():
+            print(f"Task {task.id} not ready")
+            print(f"Task {task.id} state: {task.state}")
+            sleep(1)
+        with allow_join_result():
+            sentiment = task.get()
+            print(f"Sentiment: {sentiment}")
+            return f"{answer} \n\n `Financial Impact: {sentiment}`"
     return answer

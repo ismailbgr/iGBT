@@ -46,7 +46,7 @@ class LLM:
     def __init__(self, llm_model, api_key=None):
         self.model_name = llm_model
         self.api = api_key
-        self.llm_prompt = "You are a summarizing AI. Provide a comprehensive summary of the given video script? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information. Do not mention that it is an video script."
+        self.llm_prompt = "You are a summarizing AI. Provide a comprehensive summary of the given video script? The summary should cover all the key points and main ideas presented in the original text, while also condensing the information into a concise and easy-to-understand format. Ensure that the summary includes relevant details and examples that support the main ideas, while avoiding any unnecessary information or repetition. The length of the summary should be appropriate for the length and complexity of the original text, providing a clear and accurate overview without omitting any important information. Do not mention that it is an video script. Answer only English text."
 
         if self.model_name not in ["bard", "gpt3", "ollama", "mock"]:
             raise Exception("Invalid LLM model")
@@ -104,6 +104,51 @@ class LLM:
                 generation_config=generation_config,
                 safety_settings=safety_settings,
             )
+
+    def get_finance_answer(self, question):
+
+        genai.configure(api_key="AIzaSyCJJJRNMZ5j-_2hX7AnalZ85lD85sMxbW4")
+        generation_config = {
+            "temperature": 1,
+            "top_p": 1,
+            "top_k": 1,
+            "max_output_tokens": 1000000,
+        }
+        safety_settings = [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+        ]
+
+        finance_model = genai.GenerativeModel(
+            model_name="gemini-1.0-pro",
+            generation_config=generation_config,
+            safety_settings=safety_settings,
+        )
+
+        convo = finance_model.start_chat()
+
+        convo.send_message(
+            "Is this a finance text? Answer only one of these options: 'Yes', 'No' \n\n"
+            + question
+        )
+        print(convo.last.text)
+
+        # return if contains yes in the answer
+        return "yes" in convo.last.text.lower()
 
     def get_answer(self, question):
         print("llm model name: ", self.model_name)
