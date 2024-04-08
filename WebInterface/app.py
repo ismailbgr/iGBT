@@ -69,15 +69,15 @@ celery.conf.task_routes = (
     ],
 )
 available_llms = [
+    {"name": "Gemini", "isApiRequired": False},
     {"name": "Ollama", "isApiRequired": False},
     {"name": "Chat GPT", "isApiRequired": True},
-    {"name": "Bard", "isApiRequired": True},
 ]
 
 convert_llm_name = {
     "Ollama": "ollama",
     "Chat GPT": "gpt3",
-    "Bard": "bard",
+    "Gemini": "bard",
 }
 
 ############################################################################################################
@@ -431,9 +431,13 @@ def upload_youtube():
             with yt_dlp.YoutubeDL() as ydl:
                 info_dict = ydl.extract_info(url, download=False)
                 title = info_dict.get("title", None)
+                thumbnail = info_dict.get("thumbnail", None)
         except:
             flash("Invalid youtube link.", category="error")
             return redirect("/")
+
+        print("THUMBNAIILLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL", thumbnail)
+        # it is something like this https://i.ytimg.com/vi/BJjiw2Rv4Wo/sddefault.jpg?sqp=-oaymwEmCIAFEOAD8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLBF6tuTRIeTebNj4dnNxlLFRdp0_w
 
         model_name = request.form["llm"]
         api_key = request.form["apikey"]
@@ -454,7 +458,7 @@ def upload_youtube():
         video_parser_id = res.parent.parent.id
         title = str(title).replace("'", "&#39;").replace('"', "&#34;")
 
-        add_task_without_thumbnail(task_id, title, "video", "PARSING VIDEO")
+        add_task_with_thumbnail(task_id, thumbnail, title, "video", "PARSING VIDEO")
         add_entry_to_usertask(task_id, current_user.id)
         add_task_graph(llm_id, speech_texter_id, video_parser_id, task_id)
 
@@ -539,19 +543,43 @@ def check(task_id):
             if task_database["task_last_edit_date"] is not None
             else time.strftime("%d/%m/%Y %H:%M:%S")
         )
+        try:
+            task_graph = get_task_graph(task_id)
+            speech_texter_id = task_graph["speech_texter"][0]
+            speech_texter_task = celery.AsyncResult(speech_texter_id)
+        except:
+
+            class FakeTaski:
+                def __init__(self):
+                    self.ready = lambda: False
+            speech_texter_task = FakeTaski()
         if task.state == "PENDING" and task_database["result"] != "0":
             print("RESULT: ", task_database["result"])
             values["result"] = task_database["result"]
-            values["input_text"] = task_database["input_text"]
+
+            if speech_texter_task.ready():
+                speech_texter_result = speech_texter_task.get()
+                values["input_text"] = speech_texter_result
+            else:
+                values["input_text"] = get_task_by_id(task_id).iloc[0]["input_text"]
+            print(values)
             return values, 286
         elif task.state == "SUCCESS" or task.state == "FAILURE":
             values["result"] = task.get()
-            values["input_text"] = task_database["input_text"]
+            if speech_texter_task.ready():
+                speech_texter_result = speech_texter_task.get()
+                values["input_text"] = speech_texter_result
+            else:
+                values["input_text"] = get_task_by_id(task_id).iloc[0]["input_text"]
             print(values)
             return values, 286
         else:
             values["result"] = task.state
-            values["input_text"] = task_database["input_text"]
+            if speech_texter_task.ready():
+                speech_texter_result = speech_texter_task.get()
+                values["input_text"] = speech_texter_result
+            else:
+                values["input_text"] = get_task_by_id(task_id).iloc[0]["input_text"]
             print(values)
             return values
     else:

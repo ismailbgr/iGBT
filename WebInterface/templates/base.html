@@ -13,12 +13,34 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Linear+A&family=Playfair+Display&display=swap');
+
+        :root {
+            --bg: rgb(32, 34, 37);
+            --bg2: rgb(24, 26, 27);
+            --button: rgb(189, 131, 45);
+            --text-color: white;
+        }
+
+        p,
+        a {
+            color: var(--text-color);
+        }
+
+        .hidden {
+            display: none;
+        }
 
         body,
         h1 {
             font-family: 'Noto Sans Linear A', sans-serif;
+            color: white;
+        }
+
+        textarea {
+            color: white;
         }
 
         h2,
@@ -40,12 +62,12 @@
         .fa-play,
         .fa-id-card-o {
             font-size: 200px;
-            color: #7D6E83 !important;
+            color: var(--button) !important;
 
         }
 
         .submit-button {
-            background-color: #7D6E83;
+            background-color: var(--button);
             color: white;
         }
 
@@ -54,31 +76,31 @@
             height: 150px;
             padding: 12px 20px;
             box-sizing: border-box;
-            border: 2px solid #ccc;
+            border: 2px solid var(--button);
             border-radius: 4px;
-            background-color: #F8EDE3;
+            background-color: var(--bg);
             resize: none;
         }
 
         .my-bg-color {
-            background-color: #DFD3C3;
+            background-color: var(--bg);
         }
 
         .my-header-text-color {
-            color: #7D6E83;
+            color: var(--button);
         }
 
         .my-below-background-color {
-            background-color: #F8EDE3;
+            background-color: var(--bg2);
             ;
         }
 
         .clicked-page-button {
-            background-color: #F8EDE3 !important;
+            background-color: var(--bg2) !important;
         }
 
         .footer {
-            background-color: #F8EDE3;
+            background-color: var(--bg2);
         }
 
         .w3-hide-small .w3-dropdown-content {
@@ -95,7 +117,7 @@
 
         .akordiyon-cikti {
             box-shadow: 0px 9px 20px 4px rgba(0, 0, 0, 0.35);
-            background: #DFD3C3;
+            background: var(--bg);
             border-bottom-left-radius: 3px;
             padding-top: 10px;
             border-bottom-right-radius: 3px;
@@ -121,6 +143,7 @@
     <script src="https://unpkg.com/htmx.org@1.9.9"
         integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <title>{% block title %}{% endblock %} - iGBT</title>
     {% block head %}
     {% endblock %}
@@ -142,7 +165,7 @@
 
             {% if request.path != '/' %}
             <a href="/" class="w3-bar-item w3-button w3-hide-small w3-padding-large"
-                style=":hover{background-color: #DFD3C3 !important;}">iGBT
+                style=":hover{background-color: var(--bg) !important;}">iGBT
             </a>
             {% endif %}
 
@@ -227,7 +250,8 @@
 
     <!-- Header -->
     {% if request.path == '/' %}
-    <header class="w3-container my-bg-color w3-center" style="padding:128px 16px">
+    <header class="w3-container my-bg-color w3-center"
+        style="padding:128px 16px; box-shadow: var(--bg) 0px 10px 20px 20px;">
         <h1 class="w3-margin w3-jumbo my-header-text-color">iGBT</h1>
         <p class="w3-xlarge my-header-text-color">Summarizer by LLM</p>
     </header>
@@ -235,7 +259,7 @@
 
 
 
-    <div id="content">
+    <div id="content" class="animate__animated animate__fadeIn">
         {% block content %}{% endblock %}
     </div>
 
@@ -263,17 +287,22 @@
 
     <script>
         // Used to toggle the menu on small screens when clicking on the menu button
-        function myFunction() {
+        function myFunction()
+        {
             var x = document.getElementById("navDemo");
-            if (x.className.indexOf("w3-show") == -1) {
+            if (x.className.indexOf("w3-show") == -1)
+            {
                 x.className += " w3-show";
-            } else {
+            } else
+            {
                 x.className = x.className.replace(" w3-show", "");
             }
         }
 
-        document.addEventListener('invalid', (function () {
-            return function (e) {
+        document.addEventListener('invalid', (function ()
+        {
+            return function (e)
+            {
                 e.preventDefault();
                 document.getElementById("customFile").focus();
             };
@@ -291,11 +320,14 @@
         }
     </script>
     <script>
-        function accordion(id) {
+        function accordion(id)
+        {
             var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1) {
+            if (x.className.indexOf("w3-show") == -1)
+            {
                 x.className += " w3-show";
-            } else {
+            } else
+            {
                 x.className = x.className.replace(" w3-show", "");
             }
         }

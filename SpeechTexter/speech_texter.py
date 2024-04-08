@@ -3,6 +3,9 @@ import io
 import speech_recognition as sr
 from pydub import AudioSegment
 import whisper
+import torch
+
+import gc
 
 
 class Speech2Text:
@@ -11,7 +14,13 @@ class Speech2Text:
     """
 
     def __init__(
-        self, input_file, output_file, language_code=None, model_name=None, json_path=None , model_size=None
+        self,
+        input_file,
+        output_file,
+        language_code=None,
+        model_name=None,
+        json_path=None,
+        model_size=None,
     ):
         self.input_file = input_file
         self.output_file = output_file
@@ -35,21 +44,31 @@ class Speech2Text:
             mel = whisper.log_mel_spectrogram(audio).to(language_model.device)
             _, probs = language_model.detect_language(mel)
             self.language_code = max(probs, key=probs.get)
-            print("Language code not specified. Using " + self.language_code + " as default language code.")            
+            print(
+                "Language code not specified. Using "
+                + self.language_code
+                + " as default language code."
+            )
         self.json_path = json_path
         self.model_size = model_size
         if self.model_name == "google":
-            #self.client = speech.SpeechClient.from_service_account_json(self.json_path)
-            #self.config = speech.RecognitionConfig(
+            # self.client = speech.SpeechClient.from_service_account_json(self.json_path)
+            # self.config = speech.RecognitionConfig(
             #    encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             #    sample_rate_hertz=16000,
             #    language_code=language_code,  # Change this to your desired language code
-            #)
+            # )
             self.recognizer = sr.Recognizer()
         elif self.model_name == "whisper":
+            is_cuda = torch.cuda.is_available()
+            print("Cuda available: ", is_cuda)
             if self.model_size is None:
-                raise Exception("Model size not specified for whisper:" + str(self.model_size))
-            self.model = whisper.load_model(self.model_size)
+                raise Exception(
+                    "Model size not specified for whisper:" + str(self.model_size)
+                )
+            self.model = whisper.load_model(
+                self.model_size, device="cuda" if is_cuda else "cpu"
+            )
         elif self.model_name == "local":
             self.recognizer = sr.Recognizer()
         elif self.model_name == "mock":
@@ -70,6 +89,7 @@ class Speech2Text:
             str: returns the transcribed text
         """
         if self.model_name == "google":
+
             def convert_mp3_to_wav(mp3_file, wav_file):
                 # Read the MP3 file
                 audio = AudioSegment.from_mp3(mp3_file)
@@ -100,7 +120,6 @@ class Speech2Text:
             except sr.RequestError:
                 print("Could not request results from Google Web Speech API")
                 raise sr.RequestError
-
 
         elif self.model_name == "local":
 
@@ -141,6 +160,12 @@ class Speech2Text:
             result = self.model.transcribe(self.input_file)
             with open(self.output_file, "w", encoding="utf-8") as text_file:
                 text_file.write(result["text"])
+
+            del self.model
+            gc.collect()
+            torch.cuda.empty_cache()
+            print("Whisper model removed from memory.")
+            print("Speech2Text object deleted.")
 
         elif self.model_name == "mock":
             text = """Johannes Gutenberg (1398 – 1468) was a German goldsmith and publisher who introduced printing to Europe. His introduction of mechanical movable

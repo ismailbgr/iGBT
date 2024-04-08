@@ -34,5 +34,5 @@ else
 fi
 
 printf "${YELLOW}[i] Building Docker Compose${NC}\n"
-sudo docker-compose build
+sudo docker compose build
 printf "${GREEN}[+] Docker Compose Built${NC}\n"

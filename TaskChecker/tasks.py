@@ -1,8 +1,6 @@
 from celery import Celery, current_task, states
 import time
 import yaml
-from sqlalchemy import create_engine
-from sqlalchemy.sql import text
 from celery.result import allow_join_result
 import builtins
 

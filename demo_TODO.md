@@ -1,0 +1,13 @@
+- [x] Video atıldığında anlık olarak güncellenmiyor.
+- [x] Whisper model mount edilmiyor.
+- [x] Whisper modeli speechtexter başladığında indirilecek. 
+- [x] LLM başladığında ollama modeli indirilecek.
+- [x] Videolar için information kısmı çalışmıyor.
+- [x] Youtube video thumbnail'ı gösterilmiyor.
+- [x] Chatgpt entegresi çalışmıyor.
+- [ ] Bard tamamen kaldırılabilir veya https://github.com/dsdanielpark/Gemini-API kullanılabilir.
+- [x] Promptlar güncellenmeli.
+- [x] Database'e yazan tüm fonksiyonlarda sanitize edilmeli. (e.g. add_task_with_thumbnail)
+- [x] FLOWER_UNAUTHENTICATED_API eklenecek.
+- [ ] Input text bazen geliyor bazen gelmiyor
+- [ ] Retry kısmı hep ollamaya atıyor

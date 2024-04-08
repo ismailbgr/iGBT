@@ -46,6 +46,8 @@ services:
         'flower',
         '--port=5555'
       ]
+    environment:
+      FLOWER_UNAUTHENTICATED_API: 'true'
     ports:
       - 5557:5555
     depends_on:
@@ -65,13 +67,13 @@ services:
       - ./config:/app/config
       - ./SharedData/:/data
       - ./config/ollama:/root/.ollama
-      # deploy:
-      #   resources:
-      #     reservations:
-      # devices:
-      #   - driver: nvidia
-      #     count: 1
-      #     capabilities: [ gpu ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
   llm:
     build:
       context: LLM
@@ -81,6 +83,7 @@ services:
     depends_on:
       - rabbitmq
       - ollama
+      - sentimentclassifier
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
@@ -89,20 +92,20 @@ services:
     build:
       context: SpeechTexter
       dockerfile: Dockerfile
-    user: 1000:1000
     hostname: speechtexter
     depends_on:
       - rabbitmq
     volumes:
       - ./config:/app/config
       - ./SharedData/:/data
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [ gpu ]
+      - ./config/speechtexter/:/root/.cache
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
 
   taskchecker:
     build:
@@ -183,3 +186,25 @@ services:
       - ./config:/app/config
       - ./SharedData/:/data
       - ./config/tts:/.local/share/tts
+
+  sentimentclassifier:
+    build:
+      context: SentimentClassifier
+      dockerfile: Dockerfile
+    hostname: sentimentclassifier
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./config:/app/config
+      - ./SharedData/:/data
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - 9443:9443
+    volumes:
+      - data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+volumes:
+  data:

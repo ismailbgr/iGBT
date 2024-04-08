@@ -82,7 +82,8 @@ def add_user_to_db(
 
 def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
     current_date = pd.Timestamp.now()
-
+    input_text = str(input_text).replace("'", "&#39;").replace('"', "&#34;")
+    file_name = str(file_name).replace("'", "&#39;").replace('"', "&#34;")
     query = f"insert into \"Task\" (task_id, thumbnail, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{thumbnail}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
     print(query)
     engine.execute(text(query))
@@ -90,7 +91,8 @@ def add_task_with_thumbnail(taskid, thumbnail, file_name, type, input_text):
 
 def add_task_without_thumbnail(taskid, file_name, type, input_text):
     current_date = pd.Timestamp.now()
-
+    input_text = str(input_text).replace("'", "&#39;").replace('"', "&#34;")
+    file_name = str(file_name).replace("'", "&#39;").replace('"', "&#34;")
     query = f"insert into \"Task\" (task_id, task_name, task_start_date, type, input_text, is_finished) values('{taskid}', '{file_name}', '{current_date}', '{type}', '{input_text}', '{False}');"
     print(query)
     engine.execute(text(query))
