@@ -1,5 +1,4 @@
 from celery import Celery
-import base64
 import uuid
 import yaml
 from tts_lib import iGBTTS

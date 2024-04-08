@@ -1,7 +1,5 @@
 from time import sleep
 from celery import Celery, current_task, states
-import base64
-import uuid
 from llm import LLM
 import yaml
 import requests
