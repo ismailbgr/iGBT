@@ -1,6 +1,4 @@
 from celery import Celery
-import base64
-import uuid
 import yaml
 from sentiment_classifier import FinancialSentimentAnalyzer
 

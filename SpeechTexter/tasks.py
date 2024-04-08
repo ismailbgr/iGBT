@@ -1,13 +1,8 @@
 from celery import Celery, current_task, states
-import base64
-import uuid
 import yaml
 from speech_texter import Speech2Text
 import os
 import webvtt
-import whisper
-import threading
-import gc
 
 # Load config
 config = None
