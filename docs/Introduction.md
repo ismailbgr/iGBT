@@ -58,8 +58,6 @@ print(res.get())
 
 ```
 
-> currently, the only supported model is `local`. This means that the conversion is done locally using sphinx.
-
 ### VideoParser
 
 #### Usage
@@ -122,11 +120,7 @@ LLM service is an interface to the LLMs. It receives a text and sends it to the 
 
 - [Ollama (Local Model)](https://ollama.ai/)
 - [Open-AI GPT-* Models](https://openai.com/gpt-4)
-- [Google Bard](https://bard.google.com/)
-
-##### Config
-
-> :warning: This service currently not supporting the configuration from yml file. It is hard coded in the code. This will be fixed in the future.
+- [Gemini](https://bard.google.com/)
 
 ##### Tasks
 
